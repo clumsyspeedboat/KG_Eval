@@ -3,3 +3,5 @@ numpy==2.0.0
 streamlit==1.36.0
 configparser==7.0.0
 openai==1.35.3
+neo4j
+python-dotenv
