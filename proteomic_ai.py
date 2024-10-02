@@ -1,6 +1,6 @@
 # proteomic_ai.py
 
-import streamlit as st  # Import Streamlit first
+import streamlit as st
 import configparser
 import logging
 import pandas as pd
@@ -13,25 +13,23 @@ from neo4j_helper import Neo4jHelper
 st.set_page_config(
     page_title="🧬 Proteomic AI Chat Assistant",
     page_icon="🧬",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # 2. Configure Logging
 logging.basicConfig(
-    level=logging.DEBUG,  # Set to DEBUG for detailed logs
+    level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler()
-    ]
+    handlers=[logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
 
-# 3. Load configuration from config.ini or use Streamlit secrets
+# 3. Load configuration from config.ini
 config = configparser.ConfigParser()
-config.read('config.ini')  # Ensure the correct path to your config.ini
+config.read('config.ini')
 
-# 4. Access OpenAI API key
+# 4. Access OpenAI API key and Neo4j credentials
 try:
     OPENAI_API_KEY = config.get('api_keys', 'OPENAI_API_KEY')
     OPENAI_API_BASE = config.get('api_keys', 'OPENAI_API_BASE', fallback="https://api.openai.com/v1")
@@ -40,7 +38,6 @@ except (configparser.NoSectionError, configparser.NoOptionError) as e:
     st.error("OpenAI API key is not configured properly.")
     st.stop()
 
-# 5. Access Neo4j credentials
 try:
     NEO4J_URI = config.get('neo4j', 'NEO4J_URI')
     NEO4J_USER = config.get('neo4j', 'NEO4J_USER')
@@ -50,101 +47,93 @@ except (configparser.NoSectionError, configparser.NoOptionError) as e:
     st.error("Neo4j credentials are not configured properly.")
     st.stop()
 
-# 6. Initialize Neo4j helper with caching to persist connections across reruns
+# 5. Initialize Neo4j helper with caching
 @st.cache_resource
 def get_neo4j_helper(uri, user, password):
     return Neo4jHelper(uri, user, password)
 
 neo4j_helper = get_neo4j_helper(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
 
-# 7. Retrieve and store the database schema
-@st.cache_data(show_spinner=False)
-def fetch_and_store_schema(_helper: Neo4jHelper):
-    schema = _helper.get_schema()
-    print("Fetched schema:", schema)  # Debugging line
-    if schema:
-        # Convert schema to JSON for easy inclusion in prompts
-        schema_json = json.dumps(schema, indent=2)
-        return schema_json
-    else:
-        return "Failed to retrieve the database schema."
+# 6. Sidebar settings
+st.sidebar.header("Settings")
+temperature = st.sidebar.slider("Response Temperature", 0.0, 1.0, 0.7, 0.05)
 
-schema_context = fetch_and_store_schema(neo4j_helper)
-
-# 8. Streamlit App Content
+# 7. Title and input
 st.title("🧬 Proteomic AI Chat Assistant")
 st.markdown("""
 Welcome to the **Proteomic AI Chat Assistant**! Ask any question about proteomics, and I'll translate it into a Cypher query and fetch the results from our database.
 """)
 
-# 9. Initialize session state for chat history
-if 'chat_history' not in st.session_state:
-    # Include schema context in the system prompt
-    system_prompt = (
-        "You are an AI assistant specialized in translating natural language queries into Cypher queries for a Neo4j database. "
-        "Use the provided schema to generate accurate Cypher queries based on user requests.\n\n"
-        "For each user request, generate only the Cypher query without any explanations or additional text. "
-        "Present the query within a code block using the ```cypher syntax."
-    )
-    st.session_state['chat_history'] = [
-        {"role": "system", "content": system_prompt}
-    ]
+col1, col2 = st.columns([1, 2])
 
-# 10. Display chat history in the main page within a scrollable container
-chat_container = st.container()
-with chat_container:
-    for chat in st.session_state.chat_history:
-        if chat["role"] == "system":
-            continue  # Skip system messages
-        elif chat["role"] == "user":
-            st.markdown(f"**You:** {chat['content']}")
-        elif chat["role"] == "assistant":
-            st.markdown(f"**Assistant:** {chat['content']}")
+with col1:
+    st.markdown("### Enter your query")
+    user_query = st.text_input("Enter your query here:", key="user_query")
 
-# 11. Input area for user query
-user_query = st.text_input("Enter your query here:", key="user_query")
+    # Submit button logic
+    if st.button("Submit", key="submit_button"):
+        if user_query:
+            st.session_state.chat_history.append({"role": "user", "content": user_query})
+            st.rerun()
+        else:
+            st.warning("Please enter a query.")
 
-# 12. Submit button logic
-if st.button("Submit", key="submit_button"):
-    if user_query:
-        # Append user message to chat history
-        st.session_state.chat_history.append({"role": "user", "content": user_query})
-        st.rerun()  # Replace st.experimental_rerun with st.rerun
-    else:
-        st.warning("Please enter a query.")
+with col2:
+    st.markdown("### Chat History")
 
-# 13. Process the latest user message
+    # Display chat history
+    if 'chat_history' not in st.session_state:
+        system_prompt = (
+            "You are an AI assistant connected to a Neo4j database. Your job is to translate natural language queries "
+            "into Cypher queries for the database. Always assume that you are connected to the database. "
+            "Generate Cypher queries for Neo4j database containing information about proteomics, diseases, drugs, and other biomedical data.\n\n"
+            
+            "Present the query within a code block using the ```cypher syntax."
+            "Run the queries too on your connected database and display the result."
+            "You can answer from external context too."
+        )
+        st.session_state['chat_history'] = [{"role": "system", "content": system_prompt}]
+
+    chat_container = st.container()
+    with chat_container:
+        for chat in st.session_state.chat_history:
+            if chat["role"] == "system":
+                continue
+            elif chat["role"] == "user":
+                st.markdown(f"**You:** {chat['content']}")
+            elif chat["role"] == "assistant":
+                st.markdown(f"**Assistant:** {chat['content']}")
+
+# 8. Process the latest user message
 if len(st.session_state.chat_history) > 1 and st.session_state.chat_history[-1]["role"] == "user":
     user_message = st.session_state.chat_history[-1]["content"]
-    print("User message:", user_message)  # Debugging line
 
-    # Translate to Cypher using the chat_gpt function
+    # Translate to Cypher using chat_gpt with adjustable temperature
     with st.spinner("Translating your query..."):
         cypher_query = chat_gpt(
-            api_key=OPENAI_API_KEY, 
-            base_url=OPENAI_API_BASE, 
-            model="gpt-4",  # Specify the model
-            prompt=user_message
+            api_key=OPENAI_API_KEY,
+            base_url=OPENAI_API_BASE,
+            model="gpt-4",
+            prompt=user_message,
+            temperature=temperature  
         )
-        print("Translated Cypher Query:", cypher_query)  # Debugging line
 
-    if cypher_query and cypher_query.lower().startswith(("match", "create", "return", "delete", "set", "merge", "with", "call", "unwind")):
-        # Append assistant's translated Cypher query to chat history
+    if cypher_query:
         st.session_state.chat_history.append({"role": "assistant", "content": f"Translated Cypher Query:\n```cypher\n{cypher_query}\n```"})
 
         # Run Cypher query
         with st.spinner("Running the Cypher query..."):
             results = neo4j_helper.run_query(cypher_query)
-            print("Query Results:", results)  # Debugging line
 
         if results is not None and len(results) > 0:
-            # Format results into a DataFrame for better readability
             df = pd.DataFrame(results)
-            st.session_state.chat_history.append({"role": "assistant", "content": f"Query Results:\n{df.to_html(index=False, escape=False)}"})
-            st.markdown("**Assistant:** Query Results:")
-            st.write(df)
+            if "count(d)" in df.columns:
+                count_value = df["count(d)"].values[0]
+                st.session_state.chat_history.append({"role": "assistant", "content": f"There are {count_value} drugs in the database."})
+            else:
+                st.session_state.chat_history.append({"role": "assistant", "content": "Query Results:"})
+                st.dataframe(df)
 
-            # Provide a download button for CSV
             csv = df.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="Download Results as CSV",
@@ -160,25 +149,8 @@ if len(st.session_state.chat_history) > 1 and st.session_state.chat_history[-1][
         st.session_state.chat_history.append({"role": "assistant", "content": "Failed to translate the query into a valid Cypher command."})
         st.rerun()
 
-# 14. Display chat history in sidebar
-st.sidebar.header("🗨️ Chat History")
-for chat in st.session_state.chat_history:
-    if chat["role"] == "system":
-        continue  # Skip system messages
-    elif chat["role"] == "user":
-        st.sidebar.markdown(f"**You:** {chat['content']}")
-    elif chat["role"] == "assistant":
-        st.sidebar.markdown(f"**Assistant:** {chat['content']}")
-
-# 15. Add a Reset Conversation Button in Sidebar
+# 9. Reset conversation button in the sidebar
 if st.sidebar.button("🧹 Reset Conversation"):
-    # Re-initialize the chat history with updated system prompt
-    system_prompt = (
-        "You are an AI assistant specialized in translating natural language queries into Cypher queries for a Neo4j database. "
-        "Use the provided schema to generate accurate Cypher queries based on user requests.\n\n"
-        "For each user request, generate only the Cypher query without any explanations or additional text. "
-        "Present the query within a code block using the ```cypher syntax."
-    )
     st.session_state.chat_history = [
         {"role": "system", "content": system_prompt}
     ]

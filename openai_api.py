@@ -10,15 +10,16 @@ import re
 # Configure the logger
 logger = logging.getLogger(__name__)
 
-def chat_gpt(api_key: str, base_url: str, model: str, prompt: str) -> str:
+def chat_gpt(api_key: str, base_url: str, model: str, prompt: str, temperature: float = 0.7) -> str:
     """
-    Calls the OpenAI Chat API with the given model and prompt, and returns the generated Cypher query.
+    Calls the OpenAI Chat API with the given model, prompt, and temperature, and returns the generated Cypher query.
     
     Args:
         api_key (str): The API key for authenticating OpenAI API requests.
         base_url (str): The base URL for the OpenAI API (for custom or local API servers).
         model (str): The model ID to use for generating the completion.
         prompt (str): The natural language prompt to be translated into a Cypher query.
+        temperature (float): The level of randomness for OpenAI responses. Defaults to 0.7.
     
     Returns:
         str: The generated Cypher query, or None if there was an error.
@@ -34,13 +35,14 @@ def chat_gpt(api_key: str, base_url: str, model: str, prompt: str) -> str:
             base_url=base_url,
         )
 
-        # Make the API call using chat completion
+        # Make the API call using chat completion, including the temperature parameter
         response = client.chat.completions.create(
-            model=model,  # Model from your local API server or OpenAI
+            model=model,
             messages=[
                 {"role": "system", "content": "You are an AI assistant that translates user queries into Cypher queries."},
                 {"role": "user", "content": prompt}
-            ]
+            ],
+            temperature=temperature  # Add the temperature parameter here
         )
 
         # Access the content of the assistant's message properly
