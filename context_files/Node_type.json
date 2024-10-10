@@ -1,0 +1,561 @@
+﻿[
+  {
+    "node_type": [
+      "Gene"
+    ]
+  },
+  {
+    "node_type": [
+      "BiologicalProcess"
+    ]
+  },
+  {
+    "node_type": [
+      "Interaction"
+    ]
+  },
+  {
+    "node_type": [
+      "Chemical",
+      "Compound"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein"
+    ]
+  },
+  {
+    "node_type": [
+      "CellularComponent"
+    ]
+  },
+  {
+    "node_type": [
+      "Disease",
+      "Phenotype"
+    ]
+  },
+  {
+    "node_type": [
+      "Pathway"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target"
+    ]
+  },
+  {
+    "node_type": [
+      "PrimaryTranscript",
+      "RNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "lncRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "mRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "miRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "Transcript"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "snoRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "MolecularFunction"
+    ]
+  },
+  {
+    "node_type": [
+      "Reaction",
+      "ReactionLikeEvent"
+    ]
+  },
+  {
+    "node_type": [
+      "ReactionLikeEvent",
+      "BlackBoxEvent"
+    ]
+  },
+  {
+    "node_type": [
+      "Regulation"
+    ]
+  },
+  {
+    "node_type": [
+      "MolecularComplex"
+    ]
+  },
+  {
+    "node_type": [
+      "Metabolite"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Indel",
+      "Variant"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "SingleNucleotideVariant"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Deletion"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Duplication"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Microsatellite"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Insertion"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Inversion"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "CopyNumberLoss"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "CopyNumberGain"
+    ]
+  },
+  {
+    "node_type": [
+      "Chemical",
+      "Compound",
+      "Salt"
+    ]
+  },
+  {
+    "node_type": [
+      "Product"
+    ]
+  },
+  {
+    "node_type": [
+      "Phenotype",
+      "Symptom"
+    ]
+  },
+  {
+    "node_type": [
+      "Chemical"
+    ]
+  },
+  {
+    "node_type": [
+      "EnzymeReactantSet"
+    ]
+  },
+  {
+    "node_type": [
+      "PharmacologicClass"
+    ]
+  },
+  {
+    "node_type": [
+      "Treatment"
+    ]
+  },
+  {
+    "node_type": [
+      "Phenotype",
+      "SideEffect"
+    ]
+  },
+  {
+    "node_type": [
+      "Anatomy"
+    ]
+  },
+  {
+    "node_type": [
+      "ClinicalAnnotation"
+    ]
+  },
+  {
+    "node_type": [
+      "VariantAnnotation",
+      "VariantDrugAnnotation"
+    ]
+  },
+  {
+    "node_type": [
+      "VariantAnnotation",
+      "VariantPhenotypeAnnotation"
+    ]
+  },
+  {
+    "node_type": [
+      "VariantAnnotation",
+      "VariantFunctionalAnalysisAnnotation"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target",
+      "Carrier"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Carrier",
+      "Transporter"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target",
+      "Transporter",
+      "Enzyme"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "YRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "telomeraseRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "scRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Variation"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Enzyme"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target",
+      "Transporter"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target",
+      "Carrier",
+      "Transporter",
+      "Enzyme"
+    ]
+  },
+  {
+    "node_type": [
+      "Variant",
+      "Haplotype",
+      "PhaseUnknown"
+    ]
+  },
+  {
+    "node_type": [
+      "Variant",
+      "DistinctChromosomes",
+      "Genotype"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "antisenseRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "tRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "snRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "ReactionLikeEvent",
+      "Polymerisation"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Translocation"
+    ]
+  },
+  {
+    "node_type": [
+      "Variant",
+      "Haplotype",
+      "HaplotypeSingleVariant"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "TandemDuplication"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Carrier"
+    ]
+  },
+  {
+    "node_type": [
+      "Chemical",
+      "Compound",
+      "Target"
+    ]
+  },
+  {
+    "node_type": [
+      "Phenotype"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Transporter",
+      "Enzyme"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "ncRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "ProteinOnly"
+    ]
+  },
+  {
+    "node_type": [
+      "ReactionLikeEvent",
+      "FailedReaction"
+    ]
+  },
+  {
+    "node_type": [
+      "Variant",
+      "Genotype",
+      "CompoundHeterozygote"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "MultipleNucleotideVariation"
+    ]
+  },
+  {
+    "node_type": [
+      "ReactionLikeEvent",
+      "Depolymerisation"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "vaultRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "RNaseMRPRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Transporter"
+    ]
+  },
+  {
+    "node_type": [
+      "Variant",
+      "Genotype",
+      "Diplotype"
+    ]
+  },
+  {
+    "node_type": [
+      "Chemical",
+      "Target"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Complex"
+    ]
+  },
+  {
+    "node_type": [
+      "Variant",
+      "Haplotype"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target",
+      "Carrier",
+      "Transporter"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target",
+      "Carrier",
+      "Enzyme"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Carrier",
+      "Enzyme"
+    ]
+  },
+  {
+    "node_type": [
+      "GeneVariant",
+      "Variant",
+      "Fusion"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "rRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "Protein",
+      "Target",
+      "Enzyme"
+    ]
+  },
+  {
+    "node_type": [
+      "RNA",
+      "RNasePRNA"
+    ]
+  },
+  {
+    "node_type": [
+      "Patient",
+      "UC_Patient"
+    ]
+  },
+  {
+    "node_type": [
+      "Patient",
+      "CD_Patient"
+    ]
+  },
+  {
+    "node_type": [
+      "Patient"
+    ]
+  }
+]

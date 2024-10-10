@@ -1,0 +1,17 @@
+{
+    "queries": {
+      "Remission": {
+        "description": "Identify proteins that are only present in patients who achieved remission after medication.",
+        "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.remission = \"Yes\" AND NOT EXISTS { MATCH (pat2:Patient)-[t]-(p)  WHERE pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID,        p.domain AS Domain,        p.functions AS Functions,        collect(DISTINCT b.name) AS BiologicalProcesses,        collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+      },
+      "NoRemission": {
+        "description": "Identify proteins that are only present in patients who did not achieve remission after medication.",
+        "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.remission = \"No\" AND NOT EXISTS { MATCH (pat2:Patient)-[t]-(p)  WHERE pat2.remission = 'Yes'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID,        p.domain AS Domain,        p.functions AS Functions,        collect(DISTINCT b.name) AS BiologicalProcesses,        collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+      },
+      "UpregulatedProteins": {
+        "description": "Identify proteins that are upregulated (twice as high than comparison or baseline) in patients.",
+        "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID,        p.domain AS Domain,        p.functions AS Functions,        collect(DISTINCT b.name) AS BiologicalProcesses,        collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+      }
+    }
+  }
+  

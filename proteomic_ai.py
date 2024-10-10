@@ -9,6 +9,39 @@ import json
 from openai_api import chat_gpt
 from neo4j_helper import Neo4jHelper
 
+from pathlib import Path
+
+def load_json_context_files(folder_path):
+    """
+    Load and combine contents from all JSON files in the specified folder.
+
+    Args:
+        folder_path (str or Path): Path to the folder containing JSON files.
+
+    Returns:
+        str: Combined content extracted from all JSON files.
+    """
+    folder = Path(folder_path)
+    if not folder.exists() or not folder.is_dir():
+        raise ValueError(f"The folder {folder_path} does not exist or is not a directory.")
+
+    combined_context = ""
+    for file_path in folder.glob("*.json"):
+        try:
+            with file_path.open('r', encoding='utf-8') as f:
+                data = json.load(f)
+                # Extract specific fields; adjust keys based on your JSON structure
+                title = data.get("title", "No Title")
+                content = data.get("content", "")
+                combined_context += f"### {title}\n{content}\n\n"
+                print(f"Loaded and processed: {file_path.name}")
+        except json.JSONDecodeError as jde:
+            print(f"JSON decode error in {file_path.name}: {jde}")
+        except Exception as e:
+            print(f"Failed to read {file_path.name}: {e}")
+
+    return combined_context
+
 # 1. Set Streamlit page configuration
 st.set_page_config(
     page_title="🧬 Proteomic AI Chat Assistant",
@@ -83,10 +116,14 @@ with col2:
 
     # Display chat history
     if 'chat_history' not in st.session_state:
+        context = load_json_context_files("/context_files/")
         system_prompt = (
             "You are an AI assistant connected to a Neo4j database. Your job is to translate natural language queries "
             "into Cypher queries for the database. Always assume that you are connected to the database. "
             "Generate Cypher queries for Neo4j database containing information about proteomics, diseases, drugs, and other biomedical data.\n\n"
+            
+            "Primarily you should answer from the following context and the results of the query."
+             f"### Provided Context:\n{context}"
             
             "Present the query within a code block using the ```cypher syntax."
             "Run the queries too on your connected database and display the result."

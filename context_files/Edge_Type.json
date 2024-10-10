@@ -1,0 +1,842 @@
+﻿[
+  {
+    "type(r)": "INVOLVED_IN_PiiBP"
+  },
+  {
+    "type(r)": "EXPRESSES_AeG"
+  },
+  {
+    "type(r)": "REGULATES_GrG"
+  },
+  {
+    "type(r)": "INTERACTS_GiG"
+  },
+  {
+    "type(r)": "BINDS_CHbG"
+  },
+  {
+    "type(r)": "DOWNREGULATES_AdG"
+  },
+  {
+    "type(r)": "UPREGULATES_AuG"
+  },
+  {
+    "type(r)": "IS_A_MFiaMF"
+  },
+  {
+    "type(r)": "COVARIES_GcG"
+  },
+  {
+    "type(r)": "UPREGULATES_CHuG"
+  },
+  {
+    "type(r)": "PARTICIPATES_IN_GpiPW"
+  },
+  {
+    "type(r)": "ASSOCIATES_DaG"
+  },
+  {
+    "type(r)": "DOWNREGULATES_CHdG"
+  },
+  {
+    "type(r)": "UPREGULATES_DuG"
+  },
+  {
+    "type(r)": "DOWNREGULATES_DdG"
+  },
+  {
+    "type(r)": "RESEMBLES_CrC"
+  },
+  {
+    "type(r)": "IS_A_BPiaBP"
+  },
+  {
+    "type(r)": "LOCALIZES_DlA"
+  },
+  {
+    "type(r)": "PRESENTS_DpS"
+  },
+  {
+    "type(r)": "IS_A_CCiaCC"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_OR_WITHIN_PauoowBP"
+  },
+  {
+    "type(r)": "INVOLVED_IN_GiiBP"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_OR_WITHIN_GauoowBP"
+  },
+  {
+    "type(r)": "ENABLES_PeMF"
+  },
+  {
+    "type(r)": "ENABLES_GeMF"
+  },
+  {
+    "type(r)": "LOCATED_IN_PliCC"
+  },
+  {
+    "type(r)": "IS_ACTIVE_IN_PiaiCC"
+  },
+  {
+    "type(r)": "PART_OF_PpoCC"
+  },
+  {
+    "type(r)": "PART_OF_GpoCC"
+  },
+  {
+    "type(r)": "LOCATED_IN_GliCC"
+  },
+  {
+    "type(r)": "IS_A_DiaD"
+  },
+  {
+    "type(r)": "PRODUCES_GpP"
+  },
+  {
+    "type(r)": "INTERACTS_PiI"
+  },
+  {
+    "type(r)": "INTERACTS_IiP"
+  },
+  {
+    "type(r)": "CLEAVES_TO_RctR"
+  },
+  {
+    "type(r)": "TRANSCRIBES_TO_GttR"
+  },
+  {
+    "type(r)": "TRANSLATES_TO_RttP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_IN_GiaiCC"
+  },
+  {
+    "type(r)": "MIGHT_SUBCELLULAR_LOCATES_ImslCC"
+  },
+  {
+    "type(r)": "LEADS_TO_RLEltdD"
+  },
+  {
+    "type(r)": "IN_COMPARTMENT_RLEicCC"
+  },
+  {
+    "type(r)": "PRECEDING_REACTION_RLEprRLE"
+  },
+  {
+    "type(r)": "OCCURS_IN_PWoiPW"
+  },
+  {
+    "type(r)": "PARTICIPATES_IN_PWpiRLE"
+  },
+  {
+    "type(r)": "OCCURS_IN_PWoiBP"
+  },
+  {
+    "type(r)": "IN_COMPARTMENT_PWicCC"
+  },
+  {
+    "type(r)": "ASSOCIATES_PWaM"
+  },
+  {
+    "type(r)": "ASSOCIATES_PWaP"
+  },
+  {
+    "type(r)": "HAS_GhGV"
+  },
+  {
+    "type(r)": "HAS_HhGV"
+  },
+  {
+    "type(r)": "ASSOCIATES_CaPW"
+  },
+  {
+    "type(r)": "INTERACTS_CHiCH"
+  },
+  {
+    "type(r)": "PART_OF_CpoSA"
+  },
+  {
+    "type(r)": "HAS_CHhPR"
+  },
+  {
+    "type(r)": "IS_A_SiaS"
+  },
+  {
+    "type(r)": "EQUAL_MeC"
+  },
+  {
+    "type(r)": "ASSOCIATES_DaM"
+  },
+  {
+    "type(r)": "ASSOCIATES_PaM"
+  },
+  {
+    "type(r)": "INDUCES_CHiD"
+  },
+  {
+    "type(r)": "TREATS_CHtD"
+  },
+  {
+    "type(r)": "ASSOCIATES_CHaG"
+  },
+  {
+    "type(r)": "ASSOCIATES_GaCH"
+  },
+  {
+    "type(r)": "ASSOCIATES_CHaP"
+  },
+  {
+    "type(r)": "ASSOCIATES_PaCH"
+  },
+  {
+    "type(r)": "DOWNREGULATES_CHdP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_CELLULAR_LEVEL_CHiaoclP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_CELLULAR_LEVEL_PiaoclCH"
+  },
+  {
+    "type(r)": "BINDS_CHbP"
+  },
+  {
+    "type(r)": "BINDS_PbCH"
+  },
+  {
+    "type(r)": "IS_ACTIVE_IN_METABOLISM_CHiaimG"
+  },
+  {
+    "type(r)": "IS_ACTIVE_IN_METABOLISM_CHiaimP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_IN_METABOLISM_PiaimCH"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_DNA_OR_RNA_LEVEL_CHiaodorlG"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_DNA_OR_RNA_LEVEL_CHiaodorlP"
+  },
+  {
+    "type(r)": "INCREASES_DEGENERATION_CHidP"
+  },
+  {
+    "type(r)": "UPREGULATES_CHuP"
+  },
+  {
+    "type(r)": "INCREASES_CHiBP"
+  },
+  {
+    "type(r)": "ASSOCIATES_CHaBP"
+  },
+  {
+    "type(r)": "DECREASES_CHdBP"
+  },
+  {
+    "type(r)": "TREATS_CHtS"
+  },
+  {
+    "type(r)": "REGULATES_CHrP"
+  },
+  {
+    "type(r)": "INHIBITS_CHiP"
+  },
+  {
+    "type(r)": "HAS_COMPONENT_MChcP"
+  },
+  {
+    "type(r)": "INHIBITS_CHiE"
+  },
+  {
+    "type(r)": "IS_ENZYME_PieE"
+  },
+  {
+    "type(r)": "IS_SUBSTRATE_PisE"
+  },
+  {
+    "type(r)": "IS_SUBSTRATE_CHisE"
+  },
+  {
+    "type(r)": "PARENT_OF_PCpoPC"
+  },
+  {
+    "type(r)": "HAS_MECHANISM_OF_ACTION_CHhmoaPC"
+  },
+  {
+    "type(r)": "HAS_PHYSIOLOGIC_EFFECT_CHhpePC"
+  },
+  {
+    "type(r)": "HAS_THERAPEUTIC_CATEGORY_CHhtcPC"
+  },
+  {
+    "type(r)": "PARENT_OF_PCpoCH"
+  },
+  {
+    "type(r)": "CONTRAINDICATES_CHcCH"
+  },
+  {
+    "type(r)": "CONTRAINDICATES_CHcD"
+  },
+  {
+    "type(r)": "PREVENTS_CHpD"
+  },
+  {
+    "type(r)": "TREATS_CHtT"
+  },
+  {
+    "type(r)": "TREATS_TtD"
+  },
+  {
+    "type(r)": "IS_LOCALIZED_IN_TiliCC"
+  },
+  {
+    "type(r)": "IS_INPUT_OF_PiioRLE"
+  },
+  {
+    "type(r)": "IS_OUTPUT_OF_PiooRLE"
+  },
+  {
+    "type(r)": "IS_INPUT_OF_CHiioRLE"
+  },
+  {
+    "type(r)": "IS_OUTPUT_OF_CHiooRLE"
+  },
+  {
+    "type(r)": "IS_REGULATED_BY_RLEirbRG"
+  },
+  {
+    "type(r)": "IS_INPUT_OF_MCiioRLE"
+  },
+  {
+    "type(r)": "IS_OUTPUT_OF_MCiooRLE"
+  },
+  {
+    "type(r)": "IS_IN_COMPARTMENT_MCiicCC"
+  },
+  {
+    "type(r)": "IS_INCLUDED_LOCATION_MCiilCC"
+  },
+  {
+    "type(r)": "HAS_COMPONENT_MChcCH"
+  },
+  {
+    "type(r)": "HAS_COMPONENT_MChcMC"
+  },
+  {
+    "type(r)": "LEADS_TO_MCltD"
+  },
+  {
+    "type(r)": "ASSOCIATES_VaCH"
+  },
+  {
+    "type(r)": "BELONGS_TO_PCbtPC"
+  },
+  {
+    "type(r)": "BELONGS_TO_CHbtPC"
+  },
+  {
+    "type(r)": "IS_OUTPUT_OF_MiooRLE"
+  },
+  {
+    "type(r)": "TAKES_PART_IN_PtpiRLE"
+  },
+  {
+    "type(r)": "INCLUDES_PCiCH"
+  },
+  {
+    "type(r)": "CAUSES_CHcSE"
+  },
+  {
+    "type(r)": "IS_A_AiaA"
+  },
+  {
+    "type(r)": "PART_OF_ApoA"
+  },
+  {
+    "type(r)": "ASSOCIATES_CHaR"
+  },
+  {
+    "type(r)": "ASSOCIATES_PaR"
+  },
+  {
+    "type(r)": "ASSOCIATES_RaR"
+  },
+  {
+    "type(r)": "ASSOCIATES_RaD"
+  },
+  {
+    "type(r)": "ASSOCIATES_RaS"
+  },
+  {
+    "type(r)": "ASSOCIATES_SaG"
+  },
+  {
+    "type(r)": "ASSOCIATES_DaV"
+  },
+  {
+    "type(r)": "ASSOCIATES_SaV"
+  },
+  {
+    "type(r)": "MIGHT_CAUSES_CHmcSE"
+  },
+  {
+    "type(r)": "IS_OFF_LABEL_USE_CHioluD"
+  },
+  {
+    "type(r)": "CONTRAINDICATES_CHcS"
+  },
+  {
+    "type(r)": "ASSOCIATES_IaD"
+  },
+  {
+    "type(r)": "EQUAL_SeSE"
+  },
+  {
+    "type(r)": "EQUAL_DeSE"
+  },
+  {
+    "type(r)": "EQUAL_DeS"
+  },
+  {
+    "type(r)": "IS_ALLEL_OF_ViaoV"
+  },
+  {
+    "type(r)": "ASSOCIATES_CAaG"
+  },
+  {
+    "type(r)": "ASSOCIATES_CAaV"
+  },
+  {
+    "type(r)": "ASSOCIATES_CAaCH"
+  },
+  {
+    "type(r)": "ASSOCIATES_CAaPT"
+  },
+  {
+    "type(r)": "ASSOCIATES_VAaG"
+  },
+  {
+    "type(r)": "ASSOCIATES_VAaV"
+  },
+  {
+    "type(r)": "ASSOCIATES_VAaCH"
+  },
+  {
+    "type(r)": "HAS_EVIDENCE_CAheVA"
+  },
+  {
+    "type(r)": "ASSOCIATES_MCaP"
+  },
+  {
+    "type(r)": "HAS_REGULATOR_RGhrP"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_NEGATIVE_EFFECT_PauoneBP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_UNIT_RLEiauP"
+  },
+  {
+    "type(r)": "COMBINATION_CAUSES_ADR_VccaCH"
+  },
+  {
+    "type(r)": "ASSOCIATES_CHaMF"
+  },
+  {
+    "type(r)": "DOWNREGULATES_CHdCH"
+  },
+  {
+    "type(r)": "HAS_EFFECT_ON_MCheoMC"
+  },
+  {
+    "type(r)": "IS_ACTIVE_UNIT_RLEiauMC"
+  },
+  {
+    "type(r)": "DECREASES_CHdMF"
+  },
+  {
+    "type(r)": "HAS_MECHANISM_OF_ACTION_PChmoaPC"
+  },
+  {
+    "type(r)": "CONTRIBUTES_TO_GctMF"
+  },
+  {
+    "type(r)": "DEGENERATES_CHdP"
+  },
+  {
+    "type(r)": "CONTRAINDICATES_CHcPC"
+  },
+  {
+    "type(r)": "IS_INPUT_OF_MiioRLE"
+  },
+  {
+    "type(r)": "ASSOCIATES_TO_TOXICITY_VattCH"
+  },
+  {
+    "type(r)": "HAS_PHARMACOKINETIC_CHhpPC"
+  },
+  {
+    "type(r)": "HAS_MOLECULAR_FUNCTION_PhmfMF"
+  },
+  {
+    "type(r)": "INCREASES_DEGENERATION_CHidG"
+  },
+  {
+    "type(r)": "COLOCALIZES_WITH_GcwCC"
+  },
+  {
+    "type(r)": "MAY_DIAGNOSES_PCmdD"
+  },
+  {
+    "type(r)": "HAS_ACTIVE_UNIT_RGhauCH"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_DNA_OR_RNA_LEVEL_PiaodorlCH"
+  },
+  {
+    "type(r)": "IS_OFF_LABEL_USE_CHioluS"
+  },
+  {
+    "type(r)": "PALLIATES_CHpD"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_CELLULAR_LEVEL_GiaoclCH"
+  },
+  {
+    "type(r)": "OCCURS_IN_GO_BIOLOGICAL_PROCESS_RGoigbpBP"
+  },
+  {
+    "type(r)": "OCCURS_IN_RLEoiBP"
+  },
+  {
+    "type(r)": "RESEMBLES_DrD"
+  },
+  {
+    "type(r)": "MIGHT_INDUCES_CHmiD"
+  },
+  {
+    "type(r)": "LEADS_TO_PWltD"
+  },
+  {
+    "type(r)": "NOT_CONTRIBUTES_TO_GnctMF"
+  },
+  {
+    "type(r)": "HAS_EFFECT_ON_RLEheoRLE"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_OR_WITHIN_POSITIVE_EFFECT_GauoowpeBP"
+  },
+  {
+    "type(r)": "ASSOCIATES_MCaMC"
+  },
+  {
+    "type(r)": "AFFECTS_DEGENERATION_CHadP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_IN_METABOLISM_CHiaimCH"
+  },
+  {
+    "type(r)": "PRECEDING_REACTION_PWprRLE"
+  },
+  {
+    "type(r)": "IS_REQUIRED_INPUT_COMPONENT_RLEiricMC"
+  },
+  {
+    "type(r)": "BINDS_GbCH"
+  },
+  {
+    "type(r)": "EQUAL_PTeSE"
+  },
+  {
+    "type(r)": "HAS_ACTIVE_UNIT_RGhauP"
+  },
+  {
+    "type(r)": "ASSOCIATES_CAaPC"
+  },
+  {
+    "type(r)": "INCREASES_CHiMF"
+  },
+  {
+    "type(r)": "PRECEDING_REACTION_RLEprPW"
+  },
+  {
+    "type(r)": "BINDS_CHbCH"
+  },
+  {
+    "type(r)": "HAS_STRUCTURAL_CLASSIFICATION_PChscCH"
+  },
+  {
+    "type(r)": "UPREGULATES_PuCH"
+  },
+  {
+    "type(r)": "PREVENTS_PCpD"
+  },
+  {
+    "type(r)": "DECREASES_CHdCC"
+  },
+  {
+    "type(r)": "ASSOCIATES_TO_DOSAGE_VatdCH"
+  },
+  {
+    "type(r)": "ASSOCIATES_PTaG"
+  },
+  {
+    "type(r)": "DOWNREGULATES_PdCH"
+  },
+  {
+    "type(r)": "HAS_MOLECULAR_FUNCTION_MChmfMF"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_NEGATIVE_EFFECT_GauoneBP"
+  },
+  {
+    "type(r)": "NOT_ACTS_UPSTREAM_OF_OR_WITHIN_NEGATIVE_EFFECT_PnauoowneBP"
+  },
+  {
+    "type(r)": "MIMICS_CHmP"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_OR_WITHIN_NEGATIVE_EFFECT_GauoowneBP"
+  },
+  {
+    "type(r)": "IS_NORMAL_REACTION_RLEinrRLE"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_PauoBP"
+  },
+  {
+    "type(r)": "METABOLIZES_PCmCH"
+  },
+  {
+    "type(r)": "NOT_COLOCALIZES_WITH_GncwCC"
+  },
+  {
+    "type(r)": "DECREASES_DEGENERATION_PddCH"
+  },
+  {
+    "type(r)": "ASSOCIATES_TO_EFFICACY_VateCH"
+  },
+  {
+    "type(r)": "IS_CELLULAR_COMPONENT_MCiccCC"
+  },
+  {
+    "type(r)": "NOT_PART_OF_PnpoCC"
+  },
+  {
+    "type(r)": "CONTRIBUTES_TO_PctMF"
+  },
+  {
+    "type(r)": "NOT_IS_ACTIVE_IN_PniaiCC"
+  },
+  {
+    "type(r)": "NOT_PART_OF_GnpoCC"
+  },
+  {
+    "type(r)": "INTERACTS_CHiP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_POLYPEPTIDE_LEVEL_CHiaoplCH"
+  },
+  {
+    "type(r)": "HAS_ACTIVE_METABOLITE_CHhamCH"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_OR_WITHIN_POSITIVE_EFFECT_PauoowpeBP"
+  },
+  {
+    "type(r)": "HAS_ENCAPSULATED_EVENT_PWheePW"
+  },
+  {
+    "type(r)": "NOT_LOCATED_IN_PnliCC"
+  },
+  {
+    "type(r)": "COLOCALIZES_WITH_PcwCC"
+  },
+  {
+    "type(r)": "NOT_CONTRIBUTES_TO_PnctMF"
+  },
+  {
+    "type(r)": "NOT_ENABLES_PneMF"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_POLYPEPTIDE_LEVEL_GiaoplCH"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_OR_WITHIN_NEGATIVE_EFFECT_PauoowneBP"
+  },
+  {
+    "type(r)": "HAS_ACTIVE_UNIT_RGhauMC"
+  },
+  {
+    "type(r)": "HAS_CHEMICAL_STRUCTURE_CHhcsCH"
+  },
+  {
+    "type(r)": "NOT_INVOLVED_IN_GniiBP"
+  },
+  {
+    "type(r)": "HAS_GThGV"
+  },
+  {
+    "type(r)": "ASSOCIATES_IaBP"
+  },
+  {
+    "type(r)": "ASSOCIATES_TO_METABOLISM_PK_VatmpCH"
+  },
+  {
+    "type(r)": "NOT_ACTS_UPSTREAM_OF_OR_WITHIN_PnauoowBP"
+  },
+  {
+    "type(r)": "ASSOCIATES_VAaPC"
+  },
+  {
+    "type(r)": "HAS_PHYSIOLOGIC_EFFECT_PChpePC"
+  },
+  {
+    "type(r)": "HAS_PARENT_CHhpCH"
+  },
+  {
+    "type(r)": "HAS_REGULATOR_RGhrMC"
+  },
+  {
+    "type(r)": "INCREASES_CHiCC"
+  },
+  {
+    "type(r)": "HAS_THERAPEUTIC_CATEGORY_PChtcPC"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_POSITIVE_EFFECT_PauopeBP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_IN_METABOLISM_GiaimCH"
+  },
+  {
+    "type(r)": "ASSOCIATES_GaR"
+  },
+  {
+    "type(r)": "ASSOCIATES_IaCC"
+  },
+  {
+    "type(r)": "ASSOCIATES_IaCH"
+  },
+  {
+    "type(r)": "NOT_INVOLVED_IN_PniiBP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_POLYPEPTIDE_LEVEL_PiaoplCH"
+  },
+  {
+    "type(r)": "PARENT_OF_CHpoPC"
+  },
+  {
+    "type(r)": "NOT_ENABLES_GneMF"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_POLYPEPTIDE_LEVEL_CHiaoplP"
+  },
+  {
+    "type(r)": "PRECEDING_REACTION_PWprPW"
+  },
+  {
+    "type(r)": "HAS_CHEMICAL_STRUCTURE_PChcsCH"
+  },
+  {
+    "type(r)": "INCREASES_DEGENERATION_GidCH"
+  },
+  {
+    "type(r)": "AFFECTS_DEGENERATION_GadCH"
+  },
+  {
+    "type(r)": "UPREGULATES_GuCH"
+  },
+  {
+    "type(r)": "NOT_ACTS_UPSTREAM_OF_OR_WITHIN_NEGATIVE_EFFECT_GnauoowneBP"
+  },
+  {
+    "type(r)": "DOWNREGULATES_GdCH"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_POSITIVE_EFFECT_GauopeBP"
+  },
+  {
+    "type(r)": "AFFECTS_DEGENERATION_PadCH"
+  },
+  {
+    "type(r)": "NOT_LOCATED_IN_GnliCC"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_POLYPEPTIDE_LEVEL_CHiaoplG"
+  },
+  {
+    "type(r)": "INCREASES_DEGENERATION_PidCH"
+  },
+  {
+    "type(r)": "IS_ACTIVE_AS_ANTIBODY_CHiaaaP"
+  },
+  {
+    "type(r)": "ASSOCIATES_CHaCC"
+  },
+  {
+    "type(r)": "ASSOCIATES_CHaCH"
+  },
+  {
+    "type(r)": "TREATS_PCtD"
+  },
+  {
+    "type(r)": "NOT_COLOCALIZES_WITH_PncwCC"
+  },
+  {
+    "type(r)": "DECREASES_DEGENERATION_CHddG"
+  },
+  {
+    "type(r)": "HAS_INGREDIENT_CHhiCH"
+  },
+  {
+    "type(r)": "DEGENERATES_CHdCH"
+  },
+  {
+    "type(r)": "DECREASES_DEGENERATION_CHddP"
+  },
+  {
+    "type(r)": "NOT_IS_ACTIVE_IN_GniaiCC"
+  },
+  {
+    "type(r)": "ACTS_UPSTREAM_OF_GauoBP"
+  },
+  {
+    "type(r)": "NORMAL_PATHWAY_PWnpPW"
+  },
+  {
+    "type(r)": "NOT_ACTS_UPSTREAM_OF_OR_WITHIN_GnauoowBP"
+  },
+  {
+    "type(r)": "IS_ACTIVE_ON_CELLULAR_LEVEL_CHiaoclG"
+  },
+  {
+    "type(r)": "MAY_DIAGNOSES_CHmdD"
+  },
+  {
+    "type(r)": "BELONGS_TO_CHbtCH"
+  },
+  {
+    "type(r)": "REVERSE_REACTION_RLErrRLE"
+  },
+  {
+    "type(r)": "HAS_ACTIVITY_RGhaMF"
+  },
+  {
+    "type(r)": "HAS_GThH"
+  },
+  {
+    "type(r)": "HAS_DISEASE"
+  },
+  {
+    "type(r)": "HAD_PRESCRIBED"
+  },
+  {
+    "type(r)": "MEASURED"
+  }
+]
