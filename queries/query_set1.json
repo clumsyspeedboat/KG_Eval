@@ -42,16 +42,154 @@
     },
       "Remission": {
         "description": "Identify proteins that are only present in patients who achieved remission after medication.",
+        "keywords": ["remission", "proteins"],
         "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.remission = \"Yes\" AND NOT EXISTS { MATCH (pat2:Patient)-[t]-(p)  WHERE pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID,        p.domain AS Domain,        p.functions AS Functions,        collect(DISTINCT b.name) AS BiologicalProcesses,        collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
       },
       "NoRemission": {
         "description": "Identify proteins that are only present in patients who did not achieve remission after medication.",
+        "keywords": ["non remission", "proteins"],
         "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.remission = \"No\" AND NOT EXISTS { MATCH (pat2:Patient)-[t]-(p)  WHERE pat2.remission = 'Yes'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID,        p.domain AS Domain,        p.functions AS Functions,        collect(DISTINCT b.name) AS BiologicalProcesses,        collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
       },
       "UpregulatedProteins": {
         "description": "Identify proteins that are upregulated (twice as high than comparison or baseline) in patients.",
+        "keywords": ["upregulated", "proteins"],
         "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID,        p.domain AS Domain,        p.functions AS Functions,        collect(DISTINCT b.name) AS BiologicalProcesses,        collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
-      }
+      },
+    "AbundanceWeek14Positive": {
+      "description": "Identify proteins with an abundance greater than 0 in week 14.",
+      "keywords": ["abundance", "week 14", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.abundance_w14 > '0' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.abundance_w14 = '0'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "AbundanceWeek14PositiveRemission": {
+      "description": "Identify proteins with an abundance greater than 0 in week 14 for patients in remission.",
+      "keywords": ["abundance", "week 14", "remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.abundance_w14 > '0' AND pat.remission = 'Yes' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.abundance_w14 = '0' AND pat2.remission = 'Yes'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "AbundanceWeek14PositiveNoRemission": {
+      "description": "Identify proteins with an abundance greater than 0 in week 14 for patients not in remission.",
+      "keywords": ["abundance", "week 14", "no remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.abundance_w14 > '0' AND pat.remission = 'No' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.abundance_w14 = '0' AND pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "AbundanceWeek14PositiveInfliximab": {
+      "description": "Identify proteins with an abundance greater than 0 in week 14 for patients treated with the medication Infliximab.",
+      "keywords": ["abundance", "week 14", "medication", "Infliximab", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.abundance_w14 > '0' AND pat.drug = 'Infliximb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.abundance_w14 = '0' AND pat2.drug = 'Infliximb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "AbundanceWeek14PositiveVedolizumab": {
+      "description": "Identify proteins with an abundance greater than 0 in week 14 for patients treated with the medication Vedolizumab.",
+      "keywords": ["abundance", "week 14", "medication", "Vedolizumab", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.abundance_w14 > '0' AND pat.drug = 'Vedolizumb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.abundance_w14 = '0' AND pat2.drug = 'Vedolizumb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "AbundanceWeek14PositiveOlamkicept": {
+      "description": "Identify proteins with an abundance greater than 0 in week 14 for patients treated with the medication Olamkicept.",
+      "keywords": ["abundance", "week 14", "medication", "Olamkicept", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.abundance_w14 > '0' AND pat.drug = 'Olmkicept' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.abundance_w14 = '0' AND pat2.drug = 'Olmkicept'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UpregulatedProteins": {
+      "description": "Identify proteins that are upregulated in patients.",
+      "keywords": ["upregulated", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UpregulatedProteinsRemission": {
+      "description": "Identify upregulated proteins in patients who achieved remission.",
+      "keywords": ["upregulated", "remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND pat.remission = 'Yes' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2' AND pat2.remission = 'Yes'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UpregulatedProteinsNoRemission": {
+      "description": "Identify upregulated proteins in patients who did not achieve remission.",
+      "keywords": ["upregulated", "no remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND pat.remission = 'No' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2' AND pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UpregulatedProteinsInfliximab": {
+      "description": "Identify upregulated proteins in patients treated with Infliximab.",
+      "keywords": ["upregulated", "proteins", "Infliximab"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND pat.drug = 'Infliximb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2' AND pat2.drug = 'Infliximb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UpregulatedProteinsVedolizumab": {
+      "description": "Identify upregulated proteins in patients treated with Vedolizumab.",
+      "keywords": ["upregulated", "proteins", "Vedolizumab"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND pat.drug = 'Vedolizumb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2' AND pat2.drug = 'Vedolizumb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UpregulatedProteinsOlamkicept": {
+      "description": "Identify upregulated proteins in patients treated with Olamkicept.",
+      "keywords": ["upregulated", "proteins", "Olamkicept"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score >= '2' AND pat.drug = 'Olmkicept' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score < '2' AND pat2.drug = 'Olmkicept'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "DownregulatedProteins": {
+      "description": "Identify downregulated proteins in patients.",
+      "keywords": ["downregulated", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score <= '0.5' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score > '0.5'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "DownregulatedProteinsRemission": {
+      "description": "Identify downregulated proteins in patients who achieved remission.",
+      "keywords": ["downregulated", "proteins", "remission"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score <= '0.5' AND pat.remission = 'Yes' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score > '0.5' AND pat2.remission = 'Yes'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "DownregulatedProteinsNoRemission": {
+      "description": "Identify downregulated proteins in patients who did not achieve remission.",
+      "keywords": ["downregulated", "proteins", "no remission"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score <= '0.5' AND pat.remission = 'No' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score > '0.5' AND pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "DownregulatedProteinsInfliximab": {
+      "description": "Identify downregulated proteins in patients treated with Infliximab.",
+      "keywords": ["downregulated", "proteins", "Infliximab"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score <= '0.5' AND pat.drug = 'Infliximb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score > '0.5' AND pat2.drug = 'Infliximb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "DownregulatedProteinsVedolizumab": {
+      "description": "Identify downregulated proteins in patients treated with Vedolizumab.",
+      "keywords": ["downregulated", "proteins", "Vedolizumab"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score <= '0.5' AND pat.drug = 'Vedolizumb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score > '0.5' AND pat2.drug = 'Vedolizumb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "DownregulatedProteinsOlamkicept": {
+      "description": "Identify downregulated proteins in patients treated with Olamkicept.",
+      "keywords": ["downregulated", "proteins", "Olamkicept"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE r.score <= '0.5' AND pat.drug = 'Olmkicept' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE t.score > '0.5' AND pat2.drug = 'Olmkicept'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "ProteinsInCrohnPatients": {
+      "description": "Identify proteins in patients with Crohn's disease.",
+      "keywords": ["Crohn's disease", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.disease = 'Crohn disease' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.disease = 'Ulcertive colitis'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "CrohnRemission": {
+      "description": "Identify proteins in Crohn's disease patients who achieved remission.",
+      "keywords": ["Crohn's disease", "remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.disease = 'Crohn disease' AND pat.remission = 'Yes' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.disease = 'Ulcertive colitis' AND pat2.remission = 'Yes'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "CrohnNoRemission": {
+      "description": "Identify proteins in Crohn's disease patients who did not achieve remission.",
+      "keywords": ["Crohn's disease", "no remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.disease = 'Crohn disease' AND pat.remission = 'No' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.disease = 'Ulcertive colitis' AND pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "ProteinsInUlcerativeColitisPatients": {
+      "description": "Identify proteins in patients with Ulcerative Colitis.",
+      "keywords": ["Ulcerative Colitis", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.disease = 'Ulcertive colitis' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.disease = 'Crohn disease'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UlcerativeColitisRemission": {
+      "description": "Identify proteins in Ulcerative Colitis patients who achieved remission.",
+      "keywords": ["Ulcerative Colitis", "remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.disease = 'Ulcertive colitis' AND pat.remission = 'Yes' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.disease = 'Crohn disease' AND pat2.remission = 'Yes'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "UlcerativeColitisNoRemission": {
+      "description": "Identify proteins in Ulcerative Colitis patients who did not achieve remission.",
+      "keywords": ["Ulcerative Colitis", "no remission", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.disease = 'Ulcertive colitis' AND pat.remission = 'No' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.disease = 'Crohn disease' AND pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "ProteinsWithInfliximab": {
+      "description": "Identify proteins in patients treated exclusively with Infliximab.",
+      "keywords": ["Infliximab", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.drug = 'Infliximb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.drug <> 'Infliximb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "ProteinsWithVedolizumab": {
+      "description": "Identify proteins in patients treated exclusively with Vedolizumab.",
+      "keywords": ["Vedolizumab", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.drug = 'Vedolizumb' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.drug <> 'Vedolizumb'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    },
+    "ProteinsWithOlamkicept": {
+      "description": "Identify proteins in patients treated exclusively with Olamkicept.",
+      "keywords": ["Olamkicept", "proteins"],
+      "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.drug = 'Olmkicept' AND NOT EXISTS {MATCH (pat2:Patient)-[t]-(p) WHERE pat2.drug <> 'Olmkicept'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID, p.domain AS Domain, p.functions AS Functions, collect(DISTINCT b.name) AS BiologicalProcesses, collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
+    }
     }
   }
   
