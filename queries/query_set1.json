@@ -1,5 +1,45 @@
 {
     "queries": {
+    "PatientsData": {
+      "description": "Retrieve basic information about patients.",
+      "keywords": ["patients", "data", "disease", "drug", "remission"],
+      "query": "MATCH (p:Patient) RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
+    "RemissionPatients": {
+      "description": "Retrieve information about patients who achieved remission.",
+      "keywords": ["remission", "patients"],
+      "query": "MATCH (p:Patient) WHERE p.remission = 'Yes' RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
+    "NonRemissionPatients": {
+      "description": "Retrieve information about patients who did not achieve remission.",
+      "keywords": ["no remission", "patients"],
+      "query": "MATCH (p:Patient) WHERE p.remission = 'No' RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
+    "CrohnPatients": {
+      "description": "Retrieve information about patients with Crohn's disease.",
+      "keywords": ["Crohn's disease", "patients"],
+      "query": "MATCH (p:Patient) WHERE p.disease = 'Crohn disease' RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
+    "UlcerativeColitisPatients": {
+      "description": "Retrieve information about patients with Ulcerative Colitis.",
+      "keywords": ["Ulcerative Colitis", "patients"],
+      "query": "MATCH (p:Patient) WHERE p.disease = 'Ulcertive colitis' RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
+    "InfliximbPatients": {
+      "description": "Retrieve information about patients treated with Infliximb.",
+      "keywords": ["Infliximb", "patients"],
+      "query": "MATCH (p:Patient) WHERE p.drug = 'Infliximb' RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
+    "VedolizumbPatients": {
+      "description": "Retrieve information about patients treated with Vedolizumb.",
+      "keywords": ["Vedolizumb", "patients"],
+      "query": "MATCH (p:Patient) WHERE p.drug = 'Vedolizumb' RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
+    "OlmkiceptPatients": {
+      "description": "Retrieve information about patients treated with Olmkicept.",
+      "keywords": ["Olmkicept", "patients"],
+      "query": "MATCH (p:Patient) WHERE p.drug = 'Olmkicept' RETURN p.identifier AS Patient_ID, p.disease AS Disease, p.drug AS Drug, p.remission AS Remission"
+    },
       "Remission": {
         "description": "Identify proteins that are only present in patients who achieved remission after medication.",
         "query": "MATCH (pat:Patient)-[r]-(p:Protein) WHERE pat.remission = \"Yes\" AND NOT EXISTS { MATCH (pat2:Patient)-[t]-(p)  WHERE pat2.remission = 'No'} MATCH (p)-[r2]-(b:BiologicalProcess) WHERE type(r2) = 'INVOLVED_IN_PiiBP' RETURN DISTINCT p.identifier AS Protein_ID,        p.domain AS Domain,        p.functions AS Functions,        collect(DISTINCT b.name) AS BiologicalProcesses,        collect(DISTINCT type(r2)) AS Connection_BiologicalProcesses"
