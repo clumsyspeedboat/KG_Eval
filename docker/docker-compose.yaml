@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:5.23.0
+    environment:
+      - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASS}
+    ports:
+      - "${BROWSER_PORT:-7474}:7474"
+      - "${BOLT_PORT:-7687}:7687"
+    volumes:
+      - ${DATA_DIR}:/data
+      - ${BACKUP_DIR}:/backup
+    command: >
+      sh -c "
+        if [ ! -d /data/databases/neo4j ]; then
+          echo 'Database not found. Loading the backup into the Neo4j database...';
+          neo4j-admin database load neo4j --from-path=/backup --overwrite-destination=true;
+          echo 'Deleting the system database to reset authentication...';
+          rm -rf /data/databases/system /data/transactions/system;
+          # Removed the set-initial-password command
+        else
+          echo 'Database already exists. Skipping backup loading and password reset.';
+        fi;
+        echo 'Starting the Neo4j server...';
+        neo4j console;
+      "

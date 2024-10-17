@@ -10,20 +10,15 @@
     mkdir data
     ```
 
-2. **Place dump file inside backup, for e.g. if dump file name is "neo4j.dump" then you should be able to the file when you run:**
+2. **Place dump file inside backup, with file name as "neo4j.dump"**
     ```bash
     cd /projectName/backup
     ```
 
-3. **Change directory (cd) where you placed the shell script "setup_neo4j_docker.sh" (preferrable inside "projectName" along with "bakup" and "data"):**
+3. **Change directory (cd) to this README.md file**
 
 
-4. **Make script "setup_neo4j_docker.sh" executable:**
+4. **Run docker compose**
     ```bash
-    chmod +x setup_neo4j_docker.sh
-    ```
-
-5. **Run script (Provide user input as asked by the script):**
-    ```bash
-    bash setup_neo4j_docker.sh
+    docker-compose up
     ```

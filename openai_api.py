@@ -3,74 +3,129 @@
 import openai
 import logging
 import time
-import streamlit as st
-from openai import OpenAIError, OpenAI
 import re
 
-# Configure the logger
 logger = logging.getLogger(__name__)
 
-def chat_gpt(api_key: str, base_url: str, model: str, prompt: str, temperature: float = 0.7) -> str:
-    """
-    Calls the OpenAI Chat API with the given model, prompt, and temperature, and returns the generated Cypher query.
-    
-    Args:
-        api_key (str): The API key for authenticating OpenAI API requests.
-        base_url (str): The base URL for the OpenAI API (for custom or local API servers).
-        model (str): The model ID to use for generating the completion.
-        prompt (str): The natural language prompt to be translated into a Cypher query.
-        temperature (float): The level of randomness for OpenAI responses. Defaults to 0.7.
-    
-    Returns:
-        str: The generated Cypher query, or None if there was an error.
-    """
-    try:
-        # Set the OpenAI key and base URL
-        openai.api_key = api_key
-        openai.api_base = base_url
 
-        # Initialize the OpenAI client with the API key and base URL
-        client = OpenAI(
-            api_key=api_key,
-            base_url=base_url,
+class OpenAIChat:
+    def __init__(self, api_key, base_url, model="gpt-4"):
+        self.api_key = api_key
+        self.base_url = base_url
+        self.model = model
+        openai.api_key = self.api_key
+        openai.api_base = self.base_url
+
+    def generate_response(self, conversation, temperature=0.7):
+        """
+        Generates a response from the assistant based on the conversation history.
+
+        Args:
+            conversation (list): List of message dictionaries containing 'role' and 'content'.
+            temperature (float): Sampling temperature.
+
+        Returns:
+            str: Assistant's response.
+        """
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model, messages=conversation, temperature=temperature
+            )
+            assistant_message = response["choices"][0]["message"]["content"].strip()
+            logger.info("Assistant response generated.")
+            return assistant_message
+
+        except openai.APIConnectionError as e:
+            logger.error(f"APIConnectionError: {e}")
+            print("The server could not be reached.")
+            logger.debug(e.__cause__)
+            return None
+
+        except openai.RateLimitError as e:
+            logger.error(f"RateLimitError: {e}")
+            print("Rate limit exceeded. Please wait and try again.")
+            time.sleep(5)  # Optionally wait before retrying
+            return None
+
+        except openai.APIError as e:
+            logger.error(f"APIError: {e}")
+            print(f"API Error: {e}")
+            return None
+
+        except openai.AuthenticationError as e:
+            logger.error(f"AuthenticationError: {e}")
+            print("Authentication Error: Check your OpenAI API key.")
+            return None
+
+        except Exception as e:
+            logger.error(f"Unexpected error during OpenAI interaction: {e}")
+            return None
+
+    def generate_result_summary(self, conversation, query_results, temperature=0.7):
+        """
+        Generates a summary or answer based on the query results.
+
+        Args:
+            conversation (list): List of message dictionaries containing 'role' and 'content'.
+            query_results (list): List of dictionaries representing the query results.
+            temperature (float): Sampling temperature.
+
+        Returns:
+            str: Assistant's answer summarizing the query results.
+        """
+        # Convert query results to a string format suitable for the prompt
+        result_str = f"Query Results:\n{query_results}\n"
+
+        # Append the results to the conversation
+        extended_conversation = conversation + [
+            {"role": "assistant", "content": result_str}
+        ]
+
+        # Add a prompt to generate the summary
+        extended_conversation.append(
+            {
+                "role": "assistant",
+                "content": "Based on the above query results, here is the answer to your question:",
+            }
         )
 
-        # Make the API call using chat completion, including the temperature parameter
-        response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": "You are an AI assistant that translates user queries into Cypher queries."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=temperature  # Add the temperature parameter here
-        )
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=extended_conversation,
+                temperature=temperature,
+            )
+            summary = response["choices"][0]["message"]["content"].strip()
+            logger.info("Generated summary based on query results.")
+            return summary
 
-        # Access the content of the assistant's message properly
-        cypher_query = response.choices[0].message.content.strip()
+        except openai.APIConnectionError as e:
+            logger.error(f"APIConnectionError during result summary: {e}")
+            print("The server could not be reached.")
+            logger.debug(e.__cause__)
+            return None
 
-        # Use a regular expression to replace capitalized labels with lowercase labels (e.g., "Drug" to "drug")
-        cypher_query = re.sub(r'\b([A-Z][a-z]*)\b', lambda match: match.group(0).lower(), cypher_query)
+        except openai.RateLimitError as e:
+            logger.error(f"RateLimitError during result summary: {e}")
+            print("Rate limit exceeded. Please wait and try again.")
+            time.sleep(5)  # Optionally wait before retrying
+            return None
 
-        logger.info(f"Generated Cypher Query: {cypher_query}")
-        return cypher_query
+        except openai.APIError as e:
+            logger.error(f"APIError during result summary: {e}")
+            print(f"API Error: {e}")
+            return None
 
-    except openai.AuthenticationError:
-        logger.error("Invalid OpenAI API key provided.")
-        st.error("Authentication Error: Invalid OpenAI API key. Please check your configuration.")
-        return None
+        except openai.InvalidRequestError as e:
+            logger.error(f"InvalidRequestError during result summary: {e}")
+            print(f"Invalid request: {e}")
+            return None
 
-    except openai.RateLimitError:
-        logger.error("OpenAI API rate limit exceeded.")
-        st.error("Rate Limit Exceeded: Please wait a moment and try again.")
-        time.sleep(5)  # Wait before retrying
-        return None
+        except openai.AuthenticationError as e:
+            logger.error(f"AuthenticationError during result summary: {e}")
+            print("Authentication Error: Check your OpenAI API key.")
+            return None
 
-    except OpenAIError as e:
-        logger.error(f"OpenAI API error: {e}")
-        st.error(f"OpenAI API error: {e}")
-        return None
-
-    except Exception as e:
-        logger.error(f"Unexpected error during translation: {e}")
-        st.error(f"Unexpected error: {e}")
-        return None
+        except Exception as e:
+            logger.error(f"Unexpected error during result summary generation: {e}")
+            return None
