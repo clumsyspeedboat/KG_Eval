@@ -1,6 +1,6 @@
 # test_schema.py
 
-from neo4j_helper import Neo4jHelper
+from utils.neo4j_helper import Neo4jHelper
 import configparser
 import json
 
