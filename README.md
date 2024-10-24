@@ -1,4 +1,4 @@
-# KG_Eval
+# speak2neo
 
 ## Steps
 
