@@ -4,8 +4,7 @@
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/clumsyspeedboat/KG_Eval.git
-    cd EEG-RTV
+    git clone https://github.com/clumsyspeedboat/speak2neo.git
     ```
 
 2. **Create and activate a virtual environment:**
@@ -26,5 +25,5 @@
 
 5. **Paste the following on a Web browser:**
     `
-    http://localhost:8502
+    http://localhost:8501 # Check terminal for correct port
     `
