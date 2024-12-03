@@ -1,4 +1,4 @@
-# proteomic_ai.py
+# app.py
 
 import streamlit as st
 import configparser
@@ -7,157 +7,92 @@ import pandas as pd
 import re
 import os
 import base64
+import json
+import time
 
 from pathlib import Path
 
 # Import custom modules
 from utils.neo4j_helper import Neo4jHelper
-from utils.openai_api import OpenAIChat
 from utils.context_loader import load_context
-from utils.query_matcher import find_best_query_match
+from utils.query_matcher import find_best_query_match_enhanced, find_best_query_match_rapidfuzz, find_best_query_match_with_tags
+from utils.prompt_loader import load_agent_prompts  # Importing the prompt loader
+
+# Import agents
+from agents.ontology_protex_agent import OntologyProtexAgent
+from agents.inference_protex_agent import InferenceProtexAgent
 
 # -----------------------------
 # Function Definitions
 # -----------------------------
 
-def load_css(file_path):
+def load_css(css_file_path):
     """
     Load CSS from a file.
-
-    Args:
-        file_path (str): Path to the CSS file.
-
-    Returns:
-        str: CSS content or empty string if file not found.
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(css_file_path) as f:
             css = f.read()
         return css
     except FileNotFoundError:
-        st.error(f"CSS file not found: {file_path}")
-        logger.error(f"CSS file not found: {file_path}")
-        return ""
-    except Exception as e:
-        st.error(f"Error loading CSS file: {file_path}")
-        logger.error(f"Error loading CSS file: {file_path} | Exception: {e}")
+        st.warning(f"CSS file not found at {css_file_path}")
         return ""
 
-def load_html(file_path):
+def load_html(html_file_path):
     """
     Load HTML from a file.
-
-    Args:
-        file_path (str): Path to the HTML file.
-
-    Returns:
-        str: HTML content or empty string if file not found.
     """
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(html_file_path, 'r', encoding='utf-8') as f:
             html = f.read()
         return html
     except FileNotFoundError:
-        st.error(f"HTML file not found: {file_path}")
-        logger.error(f"HTML file not found: {file_path}")
-        return ""
-    except Exception as e:
-        st.error(f"Error loading HTML file: {file_path}")
-        logger.error(f"Error loading HTML file: {file_path} | Exception: {e}")
+        st.warning(f"HTML file not found at {html_file_path}")
         return ""
 
 def encode_image_to_base64(image_path):
     """
-    Encode an image to a base64 string.
-
-    Args:
-        image_path (str): Path to the image file.
-
-    Returns:
-        str: Base64-encoded string of the image or empty string if file not found.
+    Encode image to base64.
     """
     try:
         with open(image_path, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read()).decode()
-        return encoded_string
+            encoded = base64.b64encode(image_file.read()).decode()
+        return encoded
     except FileNotFoundError:
-        st.error(f"Logo image file not found: {image_path}")
-        logger.error(f"Logo image file not found: {image_path}")
-        return ""
-    except Exception as e:
-        st.error(f"Error encoding logo image: {image_path}")
-        logger.error(f"Error encoding logo image: {image_path} | Exception: {e}")
+        st.warning(f"Image file not found at {image_path}")
         return ""
 
 def embed_logo_in_html(html_content, logo_base64):
     """
-    Embed the base64-encoded logo into the HTML content.
-
-    Args:
-        html_content (str): Original HTML content with a placeholder for the logo.
-        logo_base64 (str): Base64-encoded string of the logo image.
-
-    Returns:
-        str: Modified HTML content with the embedded logo.
+    Embed logo into HTML content.
     """
-    if logo_base64:
-        data_uri = f"data:image/png;base64,{logo_base64}"
-        # Replace the img tag's src with the data URI
-        modified_html = html_content.replace('<img id="protex-logo" alt="Protex Logo">', f'<img src="{data_uri}" alt="Protex Logo">')
-        return modified_html
-    else:
-        # If logo not found or failed to encode, return original HTML without the logo
-        logger.warning("Logo Base64 string is empty. Returning HTML without the logo.")
-        return html_content
+    return html_content.replace("{{logo}}", f"data:image/png;base64,{logo_base64}")
 
 def extract_cypher_query(response):
     """
-    Extract the Cypher query enclosed in triple backticks from the assistant's response.
-
-    Args:
-        response (str): The assistant's response.
-
-    Returns:
-        str or None: The extracted Cypher query or None if not found.
+    Extract the Cypher query from the assistant's response.
     """
-    pattern = r'```cypher\s*(.*?)```'
-    match = re.search(pattern, response, re.DOTALL)
+    match = re.search(r'```cypher\s*(.*?)\s*```', response, re.DOTALL | re.IGNORECASE)
     if match:
-        return match.group(1).strip()
+        cypher_query = match.group(1).strip()
+        return cypher_query
     else:
-        return None
+        logger.warning("No Cypher query found in the assistant's response.")
+        return ""
 
 def extract_disease_from_query(user_query):
     """
-    Extracts the disease name from the user's query.
-
-    Args:
-        user_query (str): The user's natural language query.
-
-    Returns:
-        str or None: The extracted disease name or None if not found.
+    Extract the disease name from the user's natural language query.
     """
-    pattern = r'(?:have|with)\s+([\w\s\'-]+)[\?\.]?'
-    match = re.search(pattern, user_query, re.IGNORECASE)
+    # Simple regex to find disease names (assuming they follow "disease" keyword)
+    match = re.search(r'disease\s+([A-Za-z\s]+)', user_query, re.IGNORECASE)
     if match:
         disease = match.group(1).strip()
+        logger.info(f"Extracted disease: {disease}")
         return disease
     else:
-        return None
-
-@st.cache_resource
-def load_cached_context(folder_path, as_dict=False):
-    """
-    Load context and predefined queries with caching.
-
-    Args:
-        folder_path (str): Path to the folder containing context or queries.
-        as_dict (bool): Whether to load queries as a dictionary.
-
-    Returns:
-        Any: Loaded context or queries.
-    """
-    return load_context(folder_path, as_dict)
+        logger.warning("No disease name found in the query.")
+        return ""
 
 # -----------------------------
 # Set Streamlit page configuration
@@ -191,12 +126,15 @@ if not config_path.is_file():
 
 config.read(config_path)
 
-# Access OpenAI API key
+# Access OpenAI API key and Neo4j credentials
 try:
     OPENAI_API_KEY = config.get('openai', 'OPENAI_API_KEY')
+    NEO4J_URI = config.get('neo4j', 'NEO4J_URI')
+    NEO4J_USER = config.get('neo4j', 'NEO4J_USER')
+    NEO4J_PASSWORD = config.get('neo4j', 'NEO4J_PASSWORD')
 except (configparser.NoSectionError, configparser.NoOptionError) as e:
     logger.error(f"Configuration Error: {e}")
-    st.error("OpenAI API key is not configured properly in 'config.ini'.")
+    st.error("Configuration error in 'config.ini'. Please check the file.")
     st.stop()
 
 # -----------------------------
@@ -207,6 +145,12 @@ if 'neo4j_connected' not in st.session_state:
 
 if 'chat_history' not in st.session_state:
     st.session_state['chat_history'] = []
+
+if 'ontology_protex_agent' not in st.session_state:
+    st.session_state['ontology_protex_agent'] = None
+
+if 'inference_protex_agent' not in st.session_state:
+    st.session_state['inference_protex_agent'] = None
 
 # -----------------------------
 # Load CSS and HTML
@@ -236,16 +180,16 @@ with st.sidebar:
     # Allow user to input Neo4j host and port
     neo4j_host = st.text_input("Neo4j Host", value="localhost")
     neo4j_port = st.number_input("Neo4j Port", min_value=1, max_value=65535, value=7687)
-    NEO4J_URI = f"bolt://{neo4j_host}:{int(neo4j_port)}"
-    NEO4J_USER = "neo4j"
-    NEO4J_PASSWORD = st.text_input("Neo4j Password", type="password")
+    NEO4J_URI_DYNAMIC = f"bolt://{neo4j_host}:{int(neo4j_port)}"
+    NEO4J_USER_DYNAMIC = st.text_input("Neo4j User", value="neo4j")
+    NEO4J_PASSWORD_DYNAMIC = st.text_input("Neo4j Password", type="password")
 
     # Connect button
     if st.button("Connect to Neo4j"):
-        if NEO4J_PASSWORD:
+        if NEO4J_PASSWORD_DYNAMIC:
             try:
                 # Attempt to connect to Neo4j
-                neo4j_helper = Neo4jHelper(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
+                neo4j_helper = Neo4jHelper(NEO4J_URI_DYNAMIC, NEO4J_USER_DYNAMIC, NEO4J_PASSWORD_DYNAMIC)
                 if neo4j_helper.is_connected():
                     st.success("Successfully connected to Neo4j database.")
                     st.session_state['neo4j_connected'] = True
@@ -273,18 +217,110 @@ with st.sidebar:
     st.markdown("</div>", unsafe_allow_html=True)
 
 # -----------------------------
+# Initialize OntologyProtexAgent
+# -----------------------------
+def initialize_ontology_agent(prompts: dict):
+    try:
+        neo4j_helper = st.session_state.get('neo4j_helper')
+        if not neo4j_helper:
+            logger.error("Neo4jHelper is not available in session state.")
+            st.error("Neo4jHelper is not available. Please connect to Neo4j first.")
+            return None
+
+        openai_api_key = OPENAI_API_KEY  # Ensure this is loaded from config
+
+        resources_path = "./resources/"  # Adjust if your resources are in a different path
+
+        ontology_agent = OntologyProtexAgent(
+            neo4j_helper=neo4j_helper,
+            openai_api_key=openai_api_key,
+            resources_path=resources_path,
+            prompts=prompts
+        )
+
+        # Extract and form the ontology
+        schema = ontology_agent.extract_schema()
+        additional_resources = ontology_agent.load_additional_resources()
+        ontology = ontology_agent.form_ontology(
+            schema=schema,
+            additional_resources=additional_resources
+        )
+
+        # Save the ontology
+        ontology_agent.save_ontology("configs/ontology.json")
+
+        # Store the agent in session state
+        st.session_state['ontology_protex_agent'] = ontology_agent
+        logger.info("OntologyProtexAgent initialized successfully.")
+        return ontology_agent
+
+    except Exception as e:
+        logger.error(f"Failed to initialize OntologyProtexAgent: {e}")
+        st.error("Failed to initialize OntologyProtexAgent.")
+        return None
+
+# -----------------------------
+# Initialize InferenceProtexAgent
+# -----------------------------
+def initialize_inference_agent(openai_api_key: str, ontology_summary_path: str):
+    try:
+        inference_agent = InferenceProtexAgent(
+            openai_api_key=openai_api_key,
+            ontology_summary_path=ontology_summary_path
+        )
+        st.session_state['inference_protex_agent'] = inference_agent
+        logger.info("InferenceProtexAgent initialized successfully.")
+        return inference_agent
+    except Exception as e:
+        logger.error(f"Failed to initialize InferenceProtexAgent: {e}")
+        st.error("Failed to initialize InferenceProtexAgent.")
+        return None
+
+# -----------------------------
+# Load Agent Prompts
+# -----------------------------
+def load_prompts():
+    prompts_path = Path('configs/agent_prompts.json')
+    try:
+        prompts = load_agent_prompts(str(prompts_path))
+        return prompts
+    except Exception as e:
+        st.error("Failed to load agent prompts.")
+        logger.error(f"Failed to load agent prompts: {e}")
+        st.stop()
+
+# -----------------------------
 # Main Application Logic
 # -----------------------------
 # Check if connected to Neo4j before proceeding
 if st.session_state['neo4j_connected']:
-    # Initialize OpenAI Chat helper
-    openai_chat = OpenAIChat(api_key=OPENAI_API_KEY)
+    # Load agent prompts
+    prompts = load_prompts()
+
+    # Initialize OntologyProtexAgent if not already initialized
+    if not st.session_state['ontology_protex_agent']:
+        ontology_agent = initialize_ontology_agent(prompts)
+        if not ontology_agent:
+            st.stop()
+    else:
+        ontology_agent = st.session_state['ontology_protex_agent']
+        logger.info("OntologyProtexAgent retrieved from session state.")
+
+    # Initialize InferenceProtexAgent if not already initialized
+    if not st.session_state.get('inference_protex_agent'):
+        ontology_summary_path = "configs/ontology_summary.json"
+        inference_agent = initialize_inference_agent(OPENAI_API_KEY, ontology_summary_path)
+        if not inference_agent:
+            st.stop()
+    else:
+        inference_agent = st.session_state['inference_protex_agent']
+        logger.info("InferenceProtexAgent retrieved from session state.")
 
     # Load context and predefined queries with caching
     context_folder = "./resources/context_files/"
     queries_folder = "./resources/queries/"
-    context = load_cached_context(context_folder)
-    predefined_queries = load_cached_context(queries_folder, as_dict=True)
+    context = load_context(context_folder)
+    predefined_queries = load_context(queries_folder, as_dict=True)
 
     # Input area
     with st.container():
@@ -302,9 +338,18 @@ if st.session_state['neo4j_connected']:
                 st.session_state.chat_history.append({"role": "user", "content": user_query})
                 logger.info(f"User Query: {user_query}")
 
-                # Find best query match
+                # Find best query match using enhanced matching
                 try:
-                    best_match = find_best_query_match(user_query, predefined_queries)
+                    # Choose the matching function based on your preference
+                    # Option 1: Enhanced similarity-based matching
+                    best_match = find_best_query_match_enhanced(user_query, predefined_queries)
+                    
+                    # Option 2: RapidFuzz matching (ensure you have RapidFuzz installed and configured)
+                    # best_match = find_best_query_match_rapidfuzz(user_query, predefined_queries, threshold=40)
+                    
+                    # Option 3: Tag-based matching
+                    # best_match = find_best_query_match_with_tags(user_query, predefined_queries)
+                    
                 except Exception as e:
                     st.error("An error occurred while matching your query.")
                     logger.error(f"Query Matching Error: {e}")
@@ -333,45 +378,18 @@ if st.session_state['neo4j_connected']:
                         assistant_response = f"Here is the Cypher query based on your request:\n```cypher\n{cypher_query}\n```"
                         st.session_state.chat_history.append({"role": "assistant", "content": assistant_response})
                 else:
-                    # Generate a new query using OpenAI
-                    logger.info("No good match found. Generating query using OpenAI.")
-
-                    # Updated system prompt
-                    system_prompt = (
-                        "You are an AI assistant that translates user queries into Cypher queries for a Neo4j database. "
-                        "The database contains information about proteins, patients, diseases, and treatments. "
-                        "When the user's query is related to this database, generate an appropriate Cypher query and enclose it within triple backticks ``` with 'cypher' specified (e.g., ```cypher\nYOUR_QUERY\n```). "
-                        "If the user's query is not related to this database, politely inform them that the database only contains information about proteins, patients, diseases, and treatments, and ask them to provide a relevant query. "
-                        "Examples of user queries and corresponding Cypher queries:\n"
-                        "- User: 'Show me all proteins involved in remission.'\n"
-                        "- Cypher: ```cypher\nMATCH (p:Protein)-[:INVOLVED_IN]->(bp:BiologicalProcess {name: 'Remission'}) RETURN p```\n"
-                        "- User: 'How many patients have Crohn's disease?'\n"
-                        "- Cypher: ```cypher\nMATCH (pat:Patient) WHERE pat.disease = 'Crohn disease' RETURN COUNT(pat) AS NumberOfPatients```\n"
-                        "Be organized in your response; use well-formatted tables when presenting data. You may add a brief opinion at the end if appropriate. "
-                        "Do not include any explanations before or after the Cypher query."
-                    )
-
-                    try:
-                        assistant_response = openai_chat.generate_query(system_prompt, user_query)
-                        logger.info("Received assistant's response from OpenAI.")
-                    except Exception as e:
-                        st.error("Failed to generate a response due to an API error.")
-                        logger.error(f"OpenAI API Error: {e}")
-                        st.stop()
-
-                    # Try to extract the Cypher query from the assistant's response
-                    cypher_query = extract_cypher_query(assistant_response)
-                    if cypher_query:
+                    # Use InferenceProtexAgent to generate Cypher query
+                    logger.info("No good match found. Using InferenceProtexAgent to generate Cypher query.")
+                    cypher_query = inference_agent.process_user_query(user_query)
+                    if inference_agent.validate_cypher_query(cypher_query):
                         st.session_state.chat_history.append({"role": "assistant", "content": f"```cypher\n{cypher_query}\n```"})
                         logger.info(f"Generated Cypher Query: {cypher_query}")
                     else:
-                        # The assistant's response does not contain a Cypher query
-                        st.session_state.chat_history.append({"role": "assistant", "content": assistant_response})
-                        logger.warning("No Cypher query found in the assistant's response.")
+                        st.session_state.chat_history.append({"role": "assistant", "content": cypher_query})
                         cypher_query = None
 
                 # Run the Cypher query if available
-                if cypher_query:
+                if cypher_query and inference_agent.validate_cypher_query(cypher_query):
                     # Retrieve neo4j_helper from session_state
                     neo4j_helper = st.session_state.get('neo4j_helper')
                     if neo4j_helper:
@@ -412,9 +430,12 @@ if st.session_state['neo4j_connected']:
 
                                     # Generate a summary of the results
                                     try:
-                                        result_summary = openai_chat.summarize_results(results)
-                                        st.session_state.chat_history.append({"role": "assistant", "content": result_summary})
-                                        logger.info(f"Result Summary: {result_summary}")
+                                        summary = inference_agent.generate_summary(
+                                            "Summarize the following query results in detail, highlighting key insights and trends.",
+                                            json.dumps(results, indent=2)
+                                        )
+                                        st.session_state.chat_history.append({"role": "assistant", "content": summary})
+                                        logger.info(f"Result Summary: {summary}")
                                     except Exception as e:
                                         st.error("Failed to generate a summary of the results.")
                                         logger.error(f"Summary Generation Error: {e}")
@@ -426,7 +447,7 @@ if st.session_state['neo4j_connected']:
                         st.error("Neo4j helper is not available. Please reconnect to the database.")
                         logger.error("Neo4j helper is not available in session state.")
                 else:
-                    # Cypher query is None, error already handled
+                    # Cypher query is None or invalid, error already handled
                     pass
             else:
                 st.warning("Please enter a query.")
