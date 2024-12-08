@@ -20,10 +20,15 @@
 	
 4. **Run streamlit app:**
     ```bash
-    streamlit run proteomic_ai.py
+    streamlit run app.py
     ```
 
 5. **Paste the following on a Web browser:**
     `
     http://localhost:8501 # Check terminal for correct port
     `
+
+
+### Sequence Diagram for Protex Agent:
+
+![Protex sequence](./assets/uml/sequence_Protex.png)
