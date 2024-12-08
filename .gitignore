@@ -1,6 +1,8 @@
 # Docker database
 /docker/backup/
 /docker/data/
+/configs/ontology*
+/configs/*_ontology*
 
 # Inventory / Env files
 .ini

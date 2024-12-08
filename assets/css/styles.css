@@ -1,172 +1,200 @@
-/* assets/css/styles.css */
+/* 
+================================================================================
+Global Variables and Base Styles
+================================================================================
+*/
+:root {
+    /* Colors */
+    --color-background: #F4F7FA;
+    --color-text: #333333;
+    --color-primary: #3498db;
+    --color-primary-dark: #2980b9;
+    --color-accent: #1ABC9C;
+    --color-accent-dark: #16A085;
+    --color-heading: #2C3E50;
+    --color-border: #e0e0e0;
+    --color-subtle-text: #555;
+    --color-even-row: #ECF0F1;
+    --color-odd-row: #FFFFFF;
+    --color-input-bg: #f9f9f9;
+    --color-stopword: #34495E;
+    --color-table-header: #c4e2cb;
 
-/* -----------------------------
-   General App Styling
------------------------------ */
-body {
-    background-color: #F4F7FA; /* Light gray-blue background for main content */
-    color: #333333; /* Dark gray text for readability */
-    font-family: 'Roboto', sans-serif; /* Modern and clean font */
+    /* Font */
+    --font-family-main: 'Roboto', sans-serif;
+
+    /* Sizing & Spacing */
+    --spacing-sm: 5px;
+    --spacing-md: 10px;
+    --spacing-lg: 20px;
+    --border-radius: 4px;
+    --transition-speed: 0.3s;
 }
 
-/* -----------------------------
-   Header Styling
------------------------------ */
+/* Base and Reset Styles */
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-family-main);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-heading);
+    margin-bottom: var(--spacing-md);
+}
+
+p {
+    margin-bottom: var(--spacing-md);
+}
+
+/* Links */
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+    color: var(--color-primary-dark);
+}
+
+/* Inputs */
+input, textarea {
+    background-color: var(--color-input-bg);
+    color: var(--color-text);
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: var(--spacing-lg);
+    font-size: 1em;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+}
+
+/* Buttons */
+button {
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color var(--transition-speed);
+}
+
+button:hover {
+    background-color: var(--color-primary-dark);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #BDC3C7;
+    border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #95A5A6;
+}
+
+/* 
+================================================================================
+Header
+================================================================================
+*/
 .main-header {
     text-align: center;
     margin-top: -70px;
-    background-color: #ffffff; /* White background for the header */
-    border-bottom: 1px solid #e0e0e0; /* Subtle bottom border */
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--color-border);
 }
 .main-header h1 {
     font-size: 2.5em;
     font-weight: 700;
-    color: #2C3E50; /* Dark blue-gray color for the header text */
+    color: var(--color-heading);
     margin: 0;
 }
 .main-header img {
     width: 400px;
-    margin-bottom: 5px;
+    margin-bottom: var(--spacing-sm);
 }
 
-/* -----------------------------
-   Sidebar Styling
------------------------------ */
-
-/* Sidebar Styling - Minimalistic and Modern Theme */
+/* 
+================================================================================
+Sidebar
+================================================================================
+*/
 [data-testid="stSidebar"] {
-    background: linear-gradient(to bottom, #c4e2cb 0%, #bbbbbb 100%); /* Smooth gradient from light green to light gray */
-    color: #333; /* Darker text for better readability */
-    border-right: 1px solid #dcdcdc; /* Light grey border */
-    width: 280px; /* Slightly wider for better layout */
-    transition: width 0.3s ease;
-    padding: 20px 15px; /* Updated padding for better content spacing */
+    background: linear-gradient(to bottom, #c4e2cb 0%, #bbbbbb 100%);
+    color: var(--color-text);
+    border-right: 1px solid #dcdcdc;
+    width: 280px;
+    padding: 20px 15px;
 }
 
 .sidebar-content {
-    padding: 25px; /* Uniform padding */
-    font-family: 'Helvetica Neue', Arial, sans-serif; /* Sleek, professional font */
+    padding: 25px;
+    font-family: var(--font-family-main);
 }
 
-/* Header for Sidebar */
 .sidebar-content h2 {
-    color: #2C3E50; /* Navy blue for a professional look */
-    margin-bottom: 20px;
+    color: var(--color-heading);
+    margin-bottom: var(--spacing-lg);
     font-size: 1.8em;
     font-weight: 600;
-    border-bottom: 3px solid #3498db; /* Blue border for a pop of color */
+    border-bottom: 3px solid var(--color-primary);
     padding-bottom: 10px;
 }
 
-/* Form Label Styling */
 .sidebar-content label {
-    color: #555; /* Slightly lighter for a modern look */
+    color: var(--color-subtle-text);
     font-weight: bold;
     font-size: 1em;
     display: block;
     margin-bottom: 12px;
 }
 
-/* Input Fields, Number Inputs, and Textareas */
-.sidebar-content input,
-.sidebar-content .stNumberInput > div > input,
-.sidebar-content textarea {
-    background-color: #f9f9f9; /* Very light gray for input fields */
-    color: #333; /* Dark text for contrast */
-    border: 1px solid #ccc; /* Light border */
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 18px;
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 0.95em;
-}
-
-/* Focus State for Inputs */
-.sidebar-content input:focus,
-.sidebar-content .stNumberInput > div > input:focus,
-.sidebar-content textarea:focus {
-    outline: none;
-    border-color: #3498db; /* Blue border on focus */
-    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5); /* Soft glow */
-}
-
-/* Button Styling */
 .sidebar-content .stButton button {
-    background-color: #3498db; /* Consistent blue for buttons */
-    color: #fff;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
+    background-color: var(--color-primary);
     font-size: 1em;
-    transition: background-color 0.3s;
-    width: 100%;
 }
 
 .sidebar-content .stButton button:hover {
-    background-color: #2980b9; /* Darker blue on hover */
+    background-color: var(--color-primary-dark);
 }
 
-/* Navigation Links Styling */
-.sidebar-content .menu-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.sidebar-content .menu-item i {
-    margin-right: 12px;
-    color: #FF6F61; /* Coral icons */
-    font-size: 1.2em;
-}
-
-.sidebar-content .menu-item a {
-    color: #FFFFFF; /* White links */
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.1em;
-    transition: color 0.3s ease;
-}
-
-.sidebar-content .menu-item a:hover {
-    color: #FF3B30; /* Bright coral on hover */
-}
-
-/* -----------------------------
-   Responsive Design Enhancements
------------------------------ */
-@media (max-width: 768px) {
-    [data-testid="stSidebar"] {
-        width: 100%; /* Full width on smaller screens */
-        padding: 20px;
-    }
-    
-    .sidebar-content h2 {
-        font-size: 1.8em;
-    }
-    
-    .sidebar-content .menu-item {
-        margin-bottom: 15px;
-    }
-}
-
-/* -----------------------------
-   Chat Container Styling
------------------------------ */
+/* 
+================================================================================
+Chat and Input Areas
+================================================================================
+*/
 .chat-container {
     max-width: 800px;
     margin: auto;
-    padding: 20px;
+    padding: var(--spacing-lg);
 }
 
 .chat-history {
-    max-height: 600px; /* Adjust as needed */
+    max-height: 600px;
     overflow-y: auto;
-    padding: 10px;
+    padding: var(--spacing-md);
     background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
@@ -177,13 +205,13 @@ body {
 }
 
 .chat-message.user .message-content {
-    background-color: #D1F2EB; /* Light teal for user messages */
+    background-color: #D1F2EB;
     order: 2;
     border-radius: 15px 15px 0 15px;
 }
 
 .chat-message.assistant .message-content {
-    background-color: #FFFFFF; /* White for assistant messages */
+    background-color: #FFFFFF;
     order: 1;
     border-radius: 15px 15px 15px 0;
 }
@@ -200,105 +228,118 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #1ABC9C; /* Teal for avatars */
+    background-color: var(--color-accent);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    color: #FFFFFF; /* White text for avatars */
+    color: #FFFFFF;
     margin: 0 10px;
 }
 
 .chat-message.user .message-avatar {
     order: 1;
-    background-color: #1ABC9C; /* Teal */
+    background-color: var(--color-accent);
 }
 
 .chat-message.assistant .message-avatar {
     order: 2;
-    background-color: #34495E; /* Deep blue-gray */
+    background-color: #34495E;
 }
 
-/* -----------------------------
-   Input Area Styling
------------------------------ */
 .input-container {
     max-width: 800px;
-    margin: 20px auto 0; /* Top margin for spacing from chat history */
-    padding: 10px;
+    margin: 20px auto 0;
+    padding: var(--spacing-md);
 }
 
 .input-container .stTextInput input {
     padding: 10px;
     border: 1px solid #ccc;
+    border-radius: var(--border-radius);
     width: 100%;
-    border-radius: 4px;
     box-sizing: border-box;
     font-size: 1em;
 }
 
 .input-container .stButton button {
-    background-color: #1ABC9C; /* Teal color for send button */
-    color: #FFFFFF; /* White text */
-    border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    cursor: pointer;
+    background-color: var(--color-accent);
+    color: #FFFFFF;
+    border-radius: var(--border-radius);
+    margin-top: var(--spacing-md);
+    width: 100%;
     font-weight: 600;
     font-size: 1em;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
-    width: 100%;
+    transition: background-color var(--transition-speed);
 }
 
 .input-container .stButton button:hover {
-    background-color: #16A085; /* Darker teal on hover */
+    background-color: var(--color-accent-dark);
 }
 
-/* -----------------------------
-   Table Styling
------------------------------ */
+/* 
+================================================================================
+Table Styling
+================================================================================
+*/
 table {
     margin: auto;
+    border-collapse: collapse;
+    width: 100%;
 }
 
 thead tr th {
-    background-color: #c4e2cb; /* Teal header */
-    color: #FFFFFF; /* White text */
+    background-color: var(--color-table-header);
+    color: #FFFFFF;
     font-weight: bold;
     padding: 10px;
     text-align: left;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #ECF0F1; /* Light gray for even rows */
+    background-color: var(--color-even-row);
 }
 
 tbody tr:nth-child(odd) {
-    background-color: #FFFFFF; /* White for odd rows */
+    background-color: var(--color-odd-row);
 }
 
 tbody tr td {
     padding: 8px;
-    color: #000000; /* Dark blue-gray text */
+    color: #000000;
 }
 
-/* -----------------------------
-   Scrollbar Styling
------------------------------ */
-::-webkit-scrollbar {
-    width: 8px;
+/* 
+================================================================================
+Status and Info
+================================================================================
+*/
+.status-info {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: var(--spacing-sm);
 }
 
-::-webkit-scrollbar-track {
-    background: #F4F7FA; /* Light gray-blue */
-}
+/* 
+================================================================================
+Responsive Adjustments
+================================================================================
+*/
+@media (max-width: 768px) {
+    [data-testid="stSidebar"] {
+        width: 100%;
+        padding: var(--spacing-lg);
+    }
 
-::-webkit-scrollbar-thumb {
-    background: #BDC3C7; /* Medium gray */
-    border-radius: 4px;
-}
+    .sidebar-content h2 {
+        font-size: 1.5em;
+    }
 
-::-webkit-scrollbar-thumb:hover {
-    background: #95A5A6; /* Darker gray on hover */
+    .chat-container, .input-container {
+        padding: var(--spacing-md);
+    }
+
+    .chat-history {
+        max-height: 400px;
+    }
 }
