@@ -1,54 +1,47 @@
 # utils/openai_api.py
 
-import openai
+from openai import OpenAI
+from typing import Optional, List, Dict
+from .base_chat import BaseChat
 import logging
 
 logger = logging.getLogger(__name__)
 
-class OpenAIChat:
-    def __init__(self, api_key, model="gpt-4"):
-        """
-        Initialize the OpenAIChat class with API key and model.
-
-        Args:
-            api_key (str): Your OpenAI API key.
-            model (str): The model to use for the chat completion.
-        """
-        openai.api_key = api_key
+class OpenAIChat(BaseChat):
+    def __init__(self, api_key: str, model: str = "gpt-4"):
+        super().__init__()
+        self.client = OpenAI(api_key=api_key)
         self.model = model
+        self.logger.info(f"Initializing OpenAIChat with model: {model}")
 
-    def generate_query(self, system_prompt, user_query):
-        """
-        Generate a Cypher query based on the user's input using OpenAI.
+    def _make_request(self, messages: List[Dict]) -> Dict:
+        def request_operation():
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=0.0 if messages[0]["role"] == "system" else 0.7
+            )
+            return response.model_dump()
 
-        Args:
-            system_prompt (str): The system prompt providing instructions.
-            user_query (str): The user's natural language query.
+        return self._handle_retry(request_operation)
 
-        Returns:
-            str or None: The assistant's response.
-        """
+    def generate_query(self, system_prompt: str, user_query: str) -> Optional[str]:
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_query}
         ]
-
-        # Optional: Log token count for debugging
-        token_count = self.count_tokens(messages)
-        logger.info(f"Token count for OpenAI request: {token_count}")
-
-        try:
-            response = openai.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=0.0
-            )
-            assistant_message = response.choices[0].message.content
-            return assistant_message
-        except Exception as e:
-            logger.error(f"OpenAI API error: {e}")
-            return None
         
+        try:
+            response = self._make_request(messages)
+            content = response["choices"][0]["message"]["content"]
+            self.add_to_history("system", system_prompt)
+            self.add_to_history("user", user_query)
+            self.add_to_history("assistant", content)
+            return content
+        except Exception as e:
+            self.logger.error(f"Error generating query: {e}")
+            return None
+
     def summarize_results(self, results):
         """
         Summarize the query results using OpenAI.
@@ -70,12 +63,8 @@ class OpenAIChat:
         logger.info(f"Token count for OpenAI summarization request: {token_count}")
 
         try:
-            response = openai.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=0.7
-            )
-            summary = response.choices[0].message.content
+            response = self._make_request(messages)
+            summary = response["choices"][0]["message"]["content"]
             return summary
         except Exception as e:
             logger.error(f"OpenAI API error during summarization: {e}")

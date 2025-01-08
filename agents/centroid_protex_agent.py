@@ -7,10 +7,11 @@ import time
 import psutil
 import re
 import configparser
+from typing import Optional  # Add this import
 
 from utils.context_loader import load_context
 from utils.neo4j_helper import Neo4jHelper
-from utils.openai_api import OpenAIChat
+from utils.api_factory import AIModelFactory
 from utils.prompt_loader import load_agent_prompts
 
 
@@ -36,10 +37,41 @@ class CentroidProtexAgent:
             user=self.config.get('neo4j', 'NEO4J_USER'),
             password=self.config.get('neo4j', 'NEO4J_PASSWORD')
         )
-        self.openai_chat = OpenAIChat(
-            api_key=self.config.get('openai', 'OPENAI_API_KEY'),
-            model="gpt-4"
-        )
+        
+        # Get timeout and retry settings from config
+        self.max_retries = self.config.getint('llama', 'MAX_RETRIES', fallback=5)
+        self.backoff_factor = self.config.getint('llama', 'BACKOFF_FACTOR', fallback=10)
+        self.analysis_timeout = self.config.getint('llama', 'ANALYSIS_TIMEOUT', fallback=600)
+        
+        # Initialize AI model with validation
+        try:
+            model_type = self.config.get('model_settings', 'DEFAULT_MODEL', fallback='openai')
+            self.logger.info(f"Configured model type: {model_type}")
+            
+            if model_type.lower().strip() == 'openai':
+                self.ai_client = AIModelFactory.create_client(
+                    'openai',
+                    openai_api_key=self.config.get('openai', 'OPENAI_API_KEY'),
+                    model='gpt-4'
+                )
+            elif model_type.lower().strip() == 'llama':
+                # Pass timeout settings from config
+                timeout = self.config.getint('llama', 'TIMEOUT', fallback=120)
+                max_retries = self.config.getint('llama', 'MAX_RETRIES', fallback=3)
+                
+                self.ai_client = AIModelFactory.create_client(
+                    'llama',
+                    api_url=self.config.get('llama', 'LLAMA_API_URL'),
+                    llama_api_key=self.config.get('llama', 'LLAMA_API_KEY'),
+                    model='llama2',
+                    timeout=timeout,
+                    max_retries=max_retries
+                )
+            else:
+                raise ValueError(f"Invalid model type: {model_type}")
+        except Exception as e:
+            self.logger.error(f"Error initializing AI client: {e}")
+            raise
 
         base_dir = Path(__file__).parent.parent
         self.context_files_dir = base_dir / 'resources' / 'context_files'
@@ -158,6 +190,12 @@ class CentroidProtexAgent:
             str: A summary of node types, edge types, and protein connections.
         """
         summary = "Context Summary:\n\n"
+        # Add metaproteomics-specific context
+        summary += "Data Types:\n"
+        summary += "- Proteins (nodes with UniProt IDs)\n"
+        summary += "- Peptides (nodes with sequence information)\n"
+        summary += "- Samples (nodes with experimental metadata)\n"
+        summary += "- Abundance measurements\n"
         summary += "Node Types:\n"
         for item in self.node_types:
             summary += f"- {item}\n"
@@ -170,51 +208,57 @@ class CentroidProtexAgent:
         return summary
 
     def determine_query_type(self, user_query):
-        """
-        Determine if the user's query is 'internal' (answerable from the knowledge base) or 'external'.
-
-        Args:
-            user_query (str): The user's query.
-
-        Returns:
-            str: 'internal' or 'external'
-        """
+        self.logger.debug(f"Determining query type for: {user_query}")
         prompt = (
             f"{self.system_prompt}\n"
             f"{self.user_prompt}\n\n"
             f"User Query: {user_query}\n"
             "Determine if this query is related to the internal knowledge base or external information. Respond with 'internal' or 'external'."
         )
+
         try:
-            response = self.openai_chat.generate_query("", prompt)
-            query_type = response.strip().lower()
+            response = self.ai_client.generate_query("", prompt)
+            return response.strip().lower() if response else "external"
         except Exception as e:
             self.logger.error(f"Error determining query type: {e}")
-            query_type = "external"
-        return query_type
+            return "external"
 
     def generate_cypher_query(self, user_query):
-        """
-        Generate a Cypher query for an internal request using the OpenAI API.
-
-        Args:
-            user_query (str): The user's query.
-
-        Returns:
-            str: Generated Cypher query or empty string on failure.
-        """
+        self.logger.debug(f"Generating Cypher query for: {user_query}")
+        
+        # Add basic query templates for common patterns
+        basic_templates = {
+            "count patients": "MATCH (p:Patient) WHERE p.status = 'remission' RETURN count(p) as patient_count",
+            "patient status": "MATCH (p:Patient) RETURN p.status, count(p) as count",
+            "remission status": "MATCH (p:Patient) WHERE p.status = 'remission' RETURN count(p) as in_remission"
+        }
+        
+        # Check for basic pattern matches first
+        lower_query = user_query.lower()
+        if "patients" in lower_query and "remission" in lower_query:
+            self.logger.info("Using template query for remission count")
+            return basic_templates["remission status"]
+            
+        # If no template matches, try AI generation
         prompt = (
             f"{self.system_prompt}\n"
             f"{self.user_prompt}\n\n"
             f"User Query: {user_query}\n"
-            "Generate a Cypher query that can be used to retrieve relevant information from the Neo4j database based on the user's internal request."
+            "Generate a Cypher query that can be used to retrieve relevant information from the Neo4j database."
         )
+
         try:
-            cypher_query = self.openai_chat.generate_query("", prompt).strip()
+            cypher_query = self.ai_client.generate_query("", prompt)
+            if cypher_query:
+                cleaned_query = cypher_query.strip()
+                self.logger.info(f"Generated Cypher query: {cleaned_query}")
+                return cleaned_query
+            else:
+                self.logger.warning("AI query generation failed, using fallback")
+                return basic_templates.get("patient status", "MATCH (p:Patient) RETURN p.status, count(p)")
         except Exception as e:
             self.logger.error(f"Error generating Cypher query: {e}")
-            cypher_query = ""
-        return cypher_query
+            return basic_templates.get("patient status", "MATCH (p:Patient) RETURN p.status, count(p)")
 
     def generate_fallback_cypher_query(self, user_query):
         """
@@ -235,7 +279,7 @@ class CentroidProtexAgent:
             "No suitable predefined query was found. Please generate a fallback Cypher query that best attempts to retrieve relevant information given the context."
         )
         try:
-            fallback_query = self.openai_chat.generate_query("", prompt).strip()
+            fallback_query = self.ai_client.generate_query("", prompt).strip()
         except Exception as e:
             self.logger.error(f"Error generating fallback Cypher query: {e}")
             fallback_query = ""
@@ -258,7 +302,7 @@ class CentroidProtexAgent:
             f"User Query: {user_query}\n"
         )
         try:
-            external_answer = self.openai_chat.generate_query("", prompt).strip()
+            external_answer = self.ai_client.generate_query("", prompt).strip()
         except Exception as e:
             self.logger.error(f"Error generating external answer: {e}")
             external_answer = "I'm sorry, I couldn't provide an external answer at this time."
@@ -360,27 +404,77 @@ class CentroidProtexAgent:
 
     def analyze_results(self, table_md):
         """
-        Analyze the given Markdown table of results using the OpenAI API.
-
-        Args:
-            table_md (str): The Markdown table of results.
-
-        Returns:
-            str: Analysis text.
+        Analyze the given Markdown table of results using AI with retry logic.
         """
-        prompt = (
-            f"{self.system_prompt}\n"
-            f"{self.user_prompt}\n\n"
-            "Analyze the following Markdown table of results and provide an in-depth analysis using external knowledge.\n\n"
-            f"{table_md}\n\n"
-            "Analysis:"
-        )
+        self.logger.debug(f"Attempting to analyze results:\n{table_md}")
+        
+        # First try quick basic analysis
+        basic_analysis = self._generate_basic_analysis(table_md)
+        
+        # Get retry settings
+        max_attempts = getattr(self, 'max_retries', 5)  # Default to 5 if not set
+        backoff = getattr(self, 'backoff_factor', 10)   # Default to 10 if not set
+        
+        # Try AI analysis with retries
+        for attempt in range(max_attempts):
+            try:
+                prompt = (
+                    f"Analyze this medical trial data concisely:\n\n"
+                    f"{table_md}\n\n"
+                    "Focus on: \n"
+                    "1. Treatment effectiveness\n"
+                    "2. Key patterns\n"
+                    "3. Success rates\n"
+                    "Provide a brief, clear analysis."
+                )
+
+                analysis = self.ai_client.generate_query("", prompt)
+                if analysis and len(analysis.strip()) > 0:
+                    return f"{analysis.strip()}\n\n{basic_analysis}"
+                    
+                wait_time = backoff * (2 ** attempt)
+                self.logger.warning(f"Empty analysis on attempt {attempt + 1}, waiting {wait_time}s")
+                time.sleep(wait_time)
+                
+            except Exception as e:
+                self.logger.error(f"Analysis attempt {attempt + 1} failed: {e}")
+                if attempt < max_attempts - 1:
+                    wait_time = backoff * (2 ** attempt)
+                    self.logger.info(f"Retrying after {wait_time}s")
+                    time.sleep(wait_time)
+                continue
+        
+        # If all AI attempts fail, return basic analysis
+        self.logger.warning("All AI analysis attempts failed, using basic analysis")
+        return basic_analysis
+
+    def _generate_basic_analysis(self, table_md: str) -> str:
+        """Generate quick statistical analysis of the results."""
         try:
-            analysis = self.openai_chat.generate_query("", prompt).strip()
+            # Parse table data
+            lines = [l for l in table_md.split('\n') if l.strip()]
+            if len(lines) < 3:
+                return "No results to analyze."
+
+            # Count remission cases
+            remission_count = table_md.lower().count('yes')
+            no_remission_count = table_md.lower().count('no')
+            total_cases = remission_count + no_remission_count
+
+            # Calculate percentages
+            remission_rate = (remission_count / total_cases * 100) if total_cases > 0 else 0
+            
+            analysis = [
+                f"Total cases analyzed: {total_cases}",
+                f"Patients in remission: {remission_count} ({remission_rate:.1f}%)",
+                f"Patients not in remission: {no_remission_count}",
+            ]
+
+            return "\n".join(analysis)
+            
         except Exception as e:
-            self.logger.error(f"Error analyzing results: {e}")
-            analysis = "I'm sorry, I couldn't provide an analysis of the results."
-        return analysis
+            self.logger.error(f"Error in basic analysis: {e}")
+            return "Basic statistical analysis failed."
 
     def update_neo4j_connection(self, uri, user, password):
         """
@@ -399,39 +493,26 @@ class CentroidProtexAgent:
             raise
 
     def process_query(self, user_input: str) -> dict:
-        """
-        Process the user query by determining query type, 
-        either handle external queries or handle internal logic:
-        1. If external, generate external answer.
-        2. If internal:
-           - Generate initial Cypher query.
-           - Attempt predefined query match.
-           - If no match, generate fallback query using context.
-           - Execute query and analyze results.
-        
-        Args:
-            user_input (str): The user's natural language query.
-
-        Returns:
-            dict: A dictionary with keys:
-                  'response': Formatted response (string),
-                  'results': The query results (if any),
-                  'analysis': Additional analysis text.
-        """
+        self.logger.info(f"Processing query: {user_input}")
         try:
             query_type = self.determine_query_type(user_input)
+            self.logger.debug(f"Query type determined as: {query_type}")
+
             if query_type == 'external':
-                # Handle external queries
+                self.logger.debug("Handling external query")
                 external_answer = self.generate_external_answer(user_input)
+                self.logger.debug(f"External answer generated: {external_answer[:100]}...")
                 return {
                     'response': external_answer,
                     'results': None,
                     'analysis': None
                 }
 
-            # Internal query logic
+            self.logger.debug("Handling internal query")
             cypher_query = self.generate_cypher_query(user_input)
+            
             if not cypher_query:
+                self.logger.warning("Failed to generate Cypher query")
                 return {
                     'response': "I'm sorry, I couldn't generate a query for your request.",
                     'results': None,
@@ -473,7 +554,7 @@ class CentroidProtexAgent:
                 results = self.execute_cypher_query(cypher_to_execute)
                 table_md = self.results_to_markdown_table(results)
                 analysis = self.analyze_results(table_md)
-                response = f"**Query Results:**\n\n{table_md}\n\n**Analysis:**\n\n{analysis}"
+                response = f"""**Query Results:**\n\n{table_md}\n\n**Analysis:**\n\n{analysis}"""
                 return {
                     'response': response,
                     'results': results,
