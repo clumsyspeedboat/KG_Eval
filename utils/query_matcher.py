@@ -4,9 +4,7 @@ import difflib
 import logging
 import re
 from collections import defaultdict
-
-# Optional: Uncomment the following lines if you choose to use RapidFuzz
-# from rapidfuzz import fuzz, process
+from rapidfuzz import fuzz, process  # Uncomment this import
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +21,10 @@ def extract_keywords(text: str) -> set:
     # Define a set of common stopwords
     stopwords = {
         'how', 'many', 'are', 'the', 'in', 'with', 'is', 'of', 'a', 'an',
-        'what', 'list', 'all', 'to', 'for', 'and', 'or', 'on', 'by', 'from'
+        'what', 'list', 'all', 'to', 'for', 'and', 'or', 'on', 'by', 'from',
+        # Add metaproteomics-specific stopwords
+        'protein', 'peptide', 'sequence', 'mass', 'spectra', 'abundance',
+        'identification', 'quantification'
     }
     # Use regex to find words, excluding punctuation
     words = re.findall(r'\b\w+\b', text.lower())
@@ -89,8 +90,6 @@ def find_best_query_match_enhanced(user_query: str, predefined_queries: list) ->
     except Exception as e:
         logger.error(f"Error in enhanced query matching: {e}")
         return {}
-
-# Optional: Uncomment the following functions if you choose to use RapidFuzz
 
 def find_best_query_match_rapidfuzz(user_query: str, predefined_queries: list, threshold: int = 40) -> dict:
     """

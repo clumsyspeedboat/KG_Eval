@@ -3,39 +3,47 @@
 Global Variables and Base Styles
 ================================================================================
 */
+/* Modern Variables */
 :root {
-    /* Colors */
-    --color-background: #F4F7FA;
-    --color-text: #333333;
-    --color-primary: #3498db;
-    --color-primary-dark: #2980b9;
-    --color-accent: #1ABC9C;
-    --color-accent-dark: #16A085;
-    --color-heading: #2C3E50;
-    --color-border: #e0e0e0;
-    --color-subtle-text: #555;
-    --color-even-row: #ECF0F1;
-    --color-odd-row: #FFFFFF;
-    --color-input-bg: #f9f9f9;
-    --color-stopword: #34495E;
-    --color-table-header: #c4e2cb;
-
-    /* Font */
-    --font-family-main: 'Roboto', sans-serif;
-
-    /* Sizing & Spacing */
-    --spacing-sm: 5px;
-    --spacing-md: 10px;
-    --spacing-lg: 20px;
-    --border-radius: 4px;
-    --transition-speed: 0.3s;
+    /* Modern Color Palette */
+    --color-primary: #2B6CB0;
+    --color-primary-light: #4299E1;
+    --color-secondary: #553C9A;
+    --color-accent: #38B2AC;
+    --color-bg: #FFFFFF;  /* Changed from #F7FAFC to pure white */
+    --color-text: #2D3748;
+    --color-text-light: #EDF2F7;
+    --color-border: #E2E8F0;
+    --color-success: #48BB78;
+    --color-error: #F56565;
+    --color-sidebar-bg: #EDF2F7;
+    --color-sidebar-gradient: linear-gradient(180deg, #F7FAFC 0%, #EDF2F7 100%);
+    --color-bio-light: #e8f5e9;  /* Very light green */
+    --color-bio-medium: #c8e6c9;  /* Soft medium green */
+    --color-bio-gradient: linear-gradient(180deg, var(--color-bio-light) 0%, var(--color-bio-medium) 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
 }
 
 /* Base and Reset Styles */
 body {
-    background-color: var(--color-background);
+    background-color: var(--color-bg);
     color: var(--color-text);
-    font-family: var(--font-family-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -118,20 +126,22 @@ Header
 ================================================================================
 */
 .main-header {
-    text-align: center;
-    margin-top: -70px;
-    background-color: #ffffff;
-    border-bottom: 1px solid var(--color-border);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    padding: var(--spacing-lg);
+    margin-top: -5rem;
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
 }
 .main-header h1 {
-    font-size: 2.5em;
+    color: var(--color-text-light);
+    font-size: 2rem;
     font-weight: 700;
-    color: var(--color-heading);
     margin: 0;
 }
 .main-header img {
-    width: 400px;
-    margin-bottom: var(--spacing-sm);
+    max-width: 200px;
+    height: auto;
+    margin-bottom: var(--spacing-md);
 }
 
 /* 
@@ -140,42 +150,130 @@ Sidebar
 ================================================================================
 */
 [data-testid="stSidebar"] {
-    background: linear-gradient(to bottom, #c4e2cb 0%, #bbbbbb 100%);
-    color: var(--color-text);
-    border-right: 1px solid #dcdcdc;
-    width: 280px;
-    padding: 20px 15px;
+    background: var(--color-bio-gradient);
+    padding: var(--spacing-lg);
 }
 
 .sidebar-content {
-    padding: 25px;
-    font-family: var(--font-family-main);
+    background: rgba(255, 255, 255, 0.95);  /* Slightly transparent white */
+    backdrop-filter: blur(10px);
+    padding: var(--spacing-lg);
+    border-radius: 12px;
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 150, 136, 0.1);  /* Very subtle green border */
 }
 
-.sidebar-content h2 {
-    color: var(--color-heading);
+.sidebar-content h2, .sidebar-content h3 {
+    color: var(--color-text-light);
+    font-size: 1.25rem;
     margin-bottom: var(--spacing-lg);
-    font-size: 1.8em;
-    font-weight: 600;
-    border-bottom: 3px solid var(--color-primary);
-    padding-bottom: 10px;
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--color-accent);
 }
 
 .sidebar-content label {
-    color: var(--color-subtle-text);
-    font-weight: bold;
-    font-size: 1em;
-    display: block;
-    margin-bottom: 12px;
+    color: var(--color-primary);
+    font-weight: 500;
+    opacity: 1;
+    margin-bottom: var(--spacing-sm);
+}
+
+.sidebar-content input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text-light);
+}
+
+.sidebar-content input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(56, 178, 172, 0.3);
 }
 
 .sidebar-content .stButton button {
-    background-color: var(--color-primary);
-    font-size: 1em;
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    width: 100%;
+    margin-top: var(--spacing-md);
+    transition: all var(--transition-normal);
 }
 
 .sidebar-content .stButton button:hover {
-    background-color: var(--color-primary-dark);
+    background: var(--color-primary-light);
+    transform: translateY(-1px);
+}
+
+/* Unified header styling for sidebar sections */
+.sidebar-header {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid #4CAF50;  /* Green accent */
+}
+
+/* Logo in Sidebar */
+.sidebar-logo {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.sidebar-logo img {
+    max-width: 250px;
+    height: auto;
+    margin-bottom: var(--spacing-sm);
+}
+
+.sidebar-logo h1 {
+    color: var(--color-text);  /* Changed from text-light to regular text color (black) */
+    font-size: 2rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Sidebar Text Colors */
+.sidebar-header, .sidebar-logo h1 {
+    color: #000000 !important;  /* Force black color */
+}
+
+[data-testid="stSidebarNav"] h3, 
+.sidebar-content h3 {
+    color: #000000 !important;
+}
+
+/* Updated Sidebar Styling */
+.css-1d391kg {
+    background: linear-gradient(180deg, #2c3e50 0%, #3498db 100%);
+}
+
+/* Main Content Area */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+/* Status Badge Styling */
+.status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    margin: var(--spacing-md) 0;
+}
+
+.status-badge.connected {
+    background-color: var(--color-success);
+    color: white;
+}
+
+.status-badge.disconnected {
+    background-color: var(--color-error);
+    color: white;
 }
 
 /* 
@@ -184,9 +282,13 @@ Chat and Input Areas
 ================================================================================
 */
 .chat-container {
-    max-width: 800px;
-    margin: auto;
+    max-width: 850px;
+    margin: 0 auto;
+    background: rgb(230, 230, 230);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
     padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
 }
 
 .chat-history {
@@ -199,52 +301,60 @@ Chat and Input Areas
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+/* Chat Message Styling */
 .chat-message {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 10px;
     display: flex;
-    margin-bottom: 15px;
+    align-items: flex-start;
+    background: white;
+    box-shadow: var(--shadow-sm);
+    animation: slideIn 0.3s ease;
 }
 
 .chat-message.user .message-content {
-    background-color: #D1F2EB;
-    order: 2;
-    border-radius: 15px 15px 0 15px;
+    background: white;
+    color: var(--color-text);
+    margin-left: var(--spacing-md);
 }
 
 .chat-message.assistant .message-content {
-    background-color: #FFFFFF;
-    order: 1;
-    border-radius: 15px 15px 15px 0;
+    background: white;
+    color: var(--color-text);
+    margin-right: var(--spacing-md);
 }
 
 .message-content {
-    padding: 12px;
-    max-width: 70%;
-    word-wrap: break-word;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    font-size: 1em;
+    padding: var(--spacing-md);
+    max-width: 80%;
+    line-height: 1.5;
+    flex-grow: 1;
 }
 
 .message-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: var(--color-accent);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    color: #FFFFFF;
+    color: white;
     margin: 0 10px;
+    font-weight: bold;
+    min-width: 60px;
+    margin-right: 12px;
 }
 
 .chat-message.user .message-avatar {
     order: 1;
-    background-color: var(--color-accent);
+    background-color: #2d3748;
 }
 
 .chat-message.assistant .message-avatar {
     order: 2;
-    background-color: #34495E;
+    background-color: #2d3748;
 }
 
 .input-container {
@@ -255,7 +365,6 @@ Chat and Input Areas
 
 .input-container .stTextInput input {
     padding: 10px;
-    border: 1px solid #ccc;
     border-radius: var(--border-radius);
     width: 100%;
     box-sizing: border-box;
@@ -290,7 +399,7 @@ table {
 
 thead tr th {
     background-color: var(--color-table-header);
-    color: #FFFFFF;
+    color: #000000;
     font-weight: bold;
     padding: 10px;
     text-align: left;
@@ -309,15 +418,48 @@ tbody tr td {
     color: #000000;
 }
 
+/* Table Styling */
+.dataframe {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin: var(--spacing-md) 0;
+}
+
+.dataframe th {
+    background: #2d3748;
+    color: white;
+    padding: var(--spacing-md);
+    font-weight: 600;
+}
+
+.dataframe td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+    background: white;
+    color: var(--color-text);
+}
+
+.dataframe tr:last-child td {
+    border-bottom: none;
+}
+
 /* 
 ================================================================================
 Status and Info
 ================================================================================
 */
 .status-info {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: var(--spacing-sm);
+    background: white;
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--color-accent);
 }
 
 /* 
@@ -342,4 +484,43 @@ Responsive Adjustments
     .chat-history {
         max-height: 400px;
     }
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Query Input Area */
+.query-input-container {
+    background: white;
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    margin: var(--spacing-lg) auto;
+    max-width: 850px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chat-container {
+        margin: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+    
+    .message-content {
+        max-width: 90%;
+    }
+}
+
+/* Custom Theme Override */
+.stApp {
+    background: var(--color-bg) !important;  /* Force white background */
 }
