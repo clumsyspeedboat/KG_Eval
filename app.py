@@ -314,20 +314,23 @@ def main():
         # Query input area
         user_query = st.text_input(
             "",
-            key="query_input",  # Changed from user_query_text
+            key="query_input",
             placeholder="Ask me anything about the data...",
-            label_visibility='hidden'
+            label_visibility='hidden',
+            on_change=lambda: st.session_state.update({'send_clicked': True})
         )
         
         col1, col2, col3 = st.columns([3,1,1])
         with col2:
-            send_button = st.button("Send", key="send_btn", use_container_width=True)
+            send_clicked = st.button("Send", key="send_btn", use_container_width=True) or st.session_state.get('send_clicked', False)
+            if send_clicked:
+                st.session_state.send_clicked = False  # Reset for next use
         with col3:
             reset_button = st.button("🧹 Reset", key="reset_btn", use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
         # Process query
-        if send_button:
+        if send_clicked:
             if not st.session_state['neo4j_connected']:
                 st.warning("Please connect to the database first.")
             elif user_query.strip():
