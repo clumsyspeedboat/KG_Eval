@@ -150,65 +150,44 @@ def configure_ai_model():
     config_path = Path("config.ini")
     
     if model_choice == "OpenAI (API Key Required)":
-        # Check for existing OpenAI configuration
+        current_key = ""
         if config_path.exists():
             config.read(config_path)
-            current_key = config.get('openai', 'OPENAI_API_KEY', fallback='')
-        else:
-            current_key = ''
-
-        # OpenAI configuration
-        openai_key = st.sidebar.text_input(
-            "OpenAI API Key",
-            value=current_key,
-            type="password",
-            key="openai_key"
-        )
+            current_key = config.get('openai', 'openai_api_key', fallback='').strip()
         
-        openai_model = st.sidebar.selectbox(
-            "OpenAI Model",
-            ["gpt-4", "gpt-3.5-turbo"],
-            key="openai_model"
-        )
+        if current_key:
+            st.sidebar.info("OpenAI API key is already configured (using gpt-4).")
+        else:
+            openai_key = st.sidebar.text_input(
+                "Enter OpenAI API Key",
+                type="password",
+                key="openai_key"
+            )
+            if st.sidebar.button("Save OpenAI Configuration"):
+                try:
+                    if not config_path.exists():
+                        st.sidebar.error("config.ini not found")
+                        return
+                    config.read(config_path)
+                    if not config.has_section('neo4j') or not config.has_section('llama'):
+                        st.sidebar.error("Missing required sections in config.ini")
+                        return
 
-        if st.sidebar.button("Save OpenAI Configuration"):
-            try:
-                if not config_path.exists():
-                    st.sidebar.error("config.ini not found")
-                    return
-                
-                # Read existing config or create new sections
-                config.read(config_path)
-                if not config.has_section('neo4j') or not config.has_section('llama'):
-                    st.sidebar.error("Missing required sections in config.ini")
-                    return
-
-                config['openai'] = {
-                    'OPENAI_API_KEY': openai_key
-                }
-                config['model_settings'] = {
-                    'DEFAULT_MODEL': 'openai'
-                }
-
-                with open(config_path, 'w') as f:
-                    config.write(f)
-                st.sidebar.success("OpenAI configuration saved!")
-                
-                # Reinitialize agent with new configuration
-                st.session_state.agent = CentroidProtexAgent()
-                
-            except Exception as e:
-                st.sidebar.error(f"Error saving configuration: {e}")
+                    config['openai'] = {'openai_api_key': openai_key}
+                    config['model_settings'] = {'default_model': 'openai'}
+                    with open(config_path, 'w') as f:
+                        config.write(f)
+                    st.sidebar.success("OpenAI configuration saved!")
+                    st.session_state.agent = CentroidProtexAgent()
+                except Exception as e:
+                    st.sidebar.error(f"Error saving configuration: {e}")
     else:
-        # Using Llama
         if config_path.exists():
             config.read(config_path)
-            config['model_settings'] = {'DEFAULT_MODEL': 'llama'}
+            config['model_settings'] = {'default_model': 'llama'}
             with open(config_path, 'w') as f:
                 config.write(f)
-            
-            # Reinitialize agent with Llama configuration
-            st.session_state.agent = CentroidProtexAgent()
+        st.session_state.agent = CentroidProtexAgent()
     
     st.sidebar.markdown("</div>", unsafe_allow_html=True)
     
