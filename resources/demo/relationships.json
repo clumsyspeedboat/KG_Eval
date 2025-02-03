@@ -1,0 +1,26 @@
+{
+    "metadata": {
+      "description": "Schema for relationships in the graph. Each key is a relationship type and its value defines the source and target node types, and a placeholder for relationship properties."
+    },
+    "DIAGNOSED_WITH": {
+      "source": "Patient",
+      "target": "Disease",
+      "properties": []
+    },
+    "TREATED_WITH": {
+      "source": "Disease",
+      "target": "Treatment",
+      "properties": []
+    },
+    "ASSIGNED_TO": {
+      "source": "Patient",
+      "target": "Doctor",
+      "properties": []
+    },
+    "RECOMMENDS": {
+      "source": "Doctor",
+      "target": "Treatment",
+      "properties": []
+    }
+  }
+  
