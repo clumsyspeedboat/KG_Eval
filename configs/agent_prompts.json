@@ -1,6 +1,63 @@
 {
+    "metadata": {
+        "version": "1.0",
+        "last_updated": "2024-02-06",
+        "description": "Centralized prompt configuration for all AI interactions"
+    },
     "CentroidProtexAgent": {
-        "system_prompt": "You are the CentroidProtexAgent, responsible for managing user accounts, handling user queries, interfacing with the Neo4j knowledge graph, and utilizing context files to process and respond to user requests. Your duties include authenticating users, processing natural language inputs, determining query relevance to the knowledge graph, generating Cypher queries, executing them against the Neo4j database, retrieving results, presenting them in a user-friendly format, and providing in-depth analyses using external knowledge.",
-        "user_prompt": "Authenticate the user, handle their natural language queries, determine query relevance to the knowledge graph, generate and execute Cypher queries, retrieve results, and provide comprehensive results and analyses."
+        "metadata": {
+            "description": "Prompts used by the CentroidProtexAgent class",
+            "source_file": "agents/centroid_protex_agent.py"
+        },
+        "prompts": {
+            "system_prompt": {
+                "text": "You are the CentroidProtexAgent, responsible for managing user accounts, handling user queries, interfacing with the Neo4j knowledge graph, and utilizing context files to process and respond to user requests.",
+                "usage": "Used as the base system prompt for all interactions",
+                "called_by": ["determine_query_type", "generate_cypher_query", "generate_external_answer"]
+            },
+            "user_prompt": {
+                "text": "Handle natural language queries, determine query relevance, generate and execute Cypher queries, retrieve results, and provide comprehensive analyses.",
+                "usage": "Used as the base user prompt for all interactions",
+                "called_by": ["determine_query_type", "generate_cypher_query", "generate_external_answer"]
+            },
+            "query_type_prompt": {
+                "text": "Determine if this query is related to the internal knowledge base or external information. Respond with 'internal' or 'external'.",
+                "usage": "Used to classify if a query needs database access or external knowledge",
+                "called_by": ["determine_query_type"]
+            },
+            "cypher_generation_prompt": {
+                "text": "Generate a Cypher query that can be used to retrieve relevant information from the Neo4j database.",
+                "usage": "Used to generate Cypher queries from natural language",
+                "called_by": ["generate_cypher_query"]
+            },
+            "fallback_prompt": {
+                "text": "No suitable predefined query was found. Please generate a fallback Cypher query that best attempts to retrieve relevant information given the context.",
+                "usage": "Used when no predefined query matches",
+                "called_by": ["generate_fallback_cypher_query"]
+            },
+            "external_answer_prompt": {
+                "text": "The user's query is external. Provide a helpful, factual external answer.",
+                "usage": "Used for queries that don't require database access",
+                "called_by": ["generate_external_answer"]
+            },
+            "analysis_prompt": {
+                "text": "Imagine you are a medical and proteomic expert who understands knowledge graphs. Analyze these query results and provide insights focusing on:\n1. Disease distribution\n2. Treatment effectiveness\n3. Patient outcomes\n4. Notable patterns\nProvide a clear, concise analysis.",
+                "usage": "Used to analyze query results and provide insights",
+                "called_by": ["analyze_results"]
+            }
+        }
+    },
+    "LlamaChat": {
+        "metadata": {
+            "description": "Prompts used by the LlamaChat class",
+            "source_file": "utils/llama_api.py"
+        },
+        "prompts": {
+            "analysis_prompt": {
+                "text": "Analyze the following database query results and provide insights focusing on key patterns and findings.",
+                "usage": "Used for analyzing query results",
+                "called_by": ["analyze_results"]
+            }
+        }
     }
 }
