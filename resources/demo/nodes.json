@@ -1,0 +1,40 @@
+{
+    "metadata": {
+      "description": "Schema for node types in the graph. Each key is a node label and its value is an object describing its properties."
+    },
+    "Patient": {
+      "label": "Patient",
+      "properties": {
+        "id": "String (unique identifier)",
+        "name": "String",
+        "age": "Integer",
+        "gender": "String"
+      }
+    },
+    "Doctor": {
+      "label": "Doctor",
+      "properties": {
+        "id": "String (unique identifier)",
+        "name": "String",
+        "specialization": "String",
+        "years_experience": "Integer"
+      }
+    },
+    "Disease": {
+      "label": "Disease",
+      "properties": {
+        "id": "String (unique identifier)",
+        "name": "String",
+        "severity": "String"
+      }
+    },
+    "Treatment": {
+      "label": "Treatment",
+      "properties": {
+        "id": "String (unique identifier)",
+        "name": "String",
+        "type": "String"
+      }
+    }
+  }
+  
